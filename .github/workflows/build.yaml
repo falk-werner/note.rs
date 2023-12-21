@@ -43,10 +43,10 @@ jobs:
         run: npm install
 
       - name: Build the app
-        run: cargo tauri build
+        uses: tauri-apps/tauri-action@v0
       
       - name: Deploy
         uses: actions/upload-artifact@v4
         with:
           name: note.rs_${{runner.os}}
-          path: src-tauri/target/release/
+          path: 'src-tauri/target/release/bundle/appimage/*.AppImage'
