@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "note-rs"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "A Note taking app"
+authors = ["Falk Werner"]
 license = ""
 repository = ""
-default-run = "app"
+default-run = "note-rs"
 edition = "2021"
 rust-version = "1.60"
 

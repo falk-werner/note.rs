@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "note.rs",
+    "productName": "note-rs",
     "version": "0.1.0"
   },
   "tauri": {
@@ -39,7 +39,7 @@
       },
       "resources": [],
       "shortDescription": "",
-      "targets": "all",
+      "targets": ["appimage"],
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
