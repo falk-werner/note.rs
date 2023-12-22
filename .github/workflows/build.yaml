@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-20.04]
+        platform: [ ubuntu-20.04, windows-latest ]
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -45,8 +45,16 @@ jobs:
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
       
-      - name: Deploy
+      - name: Deploy (ubuntu)
+        if: matrix.platform == 'ubuntu-20.04'
         uses: actions/upload-artifact@v4
         with:
           name: note.rs_${{runner.os}}
           path: 'src-tauri/target/release/bundle/appimage/*.AppImage'
+
+      - name: Deploy (windows)
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: note.rs_${{runner.os}}
+          path: 'src-tauri/target/release/bundle/msi/*.msi'
