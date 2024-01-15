@@ -1,7 +1,12 @@
+
+import "lineicons/web-font/lineicons.css"
 import { EditorView, basicSetup } from "codemirror"
 import { Compartment, Text } from "@codemirror/state"
 import { markdown } from "@codemirror/lang-markdown"
 import { marked } from "marked"
+
+import { slider_attach } from "./slider.js"
+
 
 const language = new Compartment();
 const editor_element = document.querySelector("#editor");
@@ -23,3 +28,4 @@ editor.dom.addEventListener('input', async () => {
   document.querySelector("#view").innerHTML = html;
 });
 
+slider_attach(document.querySelector("#slider"));

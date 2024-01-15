@@ -2,15 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="frontend/style.css" />
   <title>note.rs</title>
 </head>
 <body>
-  <div id="content">
-    <div id="editor"></div>
-    <div id="view"></div>  
+  <div class="wrapper">
+    <div id="sidebar">
+      <i class="lni lni-search-alt"></i>
+    </div>
+    <div id="slider" data-slider-target="sidebar" class="slider"></div>
+    <div id="content">
+      <div id="editor"></div>
+      <div id="view"></div>  
+    </div>
+  
   </div>
 
-  <script type="module" src="/main.js"></script>
+  <script type="module" src="/frontend/main.js"></script>
 </body>
 </html>

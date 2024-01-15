@@ -1,0 +1,34 @@
+.wrapper {
+  display: flex;
+  flex-flow: col nowrap;
+  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wrapper > * {
+  flex: 1 100%;
+}
+
+#sidebar {
+  flex: 0 200px;
+  min-width: 200px;
+}
+
+.slider {
+  background-color: darkgray;
+  flex: 0 5px;
+  cursor: col-resize;
+}
+
+
+#content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+#content > div {
+  flex: 1;
+}
