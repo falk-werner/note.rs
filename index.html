@@ -6,16 +6,52 @@
   <title>note.rs</title>
 </head>
 <body>
-  <div class="wrapper">
+  <div data-tauri-drag-region class="titlebar">
+    <div class="titlebar-button" id="add-note">
+      <i class="lni lni-empty-file"></i>
+    </div>
+    <div data-tauri-drag-region style="line-height: 30px; flex: 100%; text-align: center;">
+      note.rs
+    </div>
+    <div class="titlebar-button" id="titlebar-settings">
+      <i class="lni lni-cog"></i>
+    </div>
+    <div class="titlebar-button" id="titlebar-info">
+      <i class="lni lni-information"></i>
+    </div>
+    <div>&nbsp;</div>    
+    <div class="titlebar-button" id="titlebar-minimize">
+      <i class="lni lni-chevron-down"></i>
+    </div>
+    <div class="titlebar-button" id="titlebar-maximize">
+      <i class="lni lni-full-screen"></i>
+    </div>
+    <div class="titlebar-button" id="titlebar-close">
+      <i class="lni lni-close"></i>
+    </div>
+  </div>
+
+  <div id="main" class="wrapper">
     <div id="sidebar">
-      <i class="lni lni-search-alt"></i>
+      <div class="controls">
+        <input id="filter" type="text" value="" />
+      </div>
+      <hr />
+      <ul id="notelist"></ul>
     </div>
     <div id="slider" data-slider-target="sidebar" class="slider"></div>
     <div id="content">
       <div id="editor"></div>
-      <div id="view"></div>  
+      <!-- <div id="view"></div> -->
+    </div>  
+  </div>
+
+  <div id="settings" class="hidden">    
+    <h1><i class="lni lni-arrow-left-circle nav-main"></i> Settings</h1>
+    <h2>Color Settings</h2>
+    <div>
+      <span>Title Bar:</span><input id="settings_titlebar" type="color" value="#b0b0b0" />
     </div>
-  
   </div>
 
   <script type="module" src="/frontend/main.js"></script>

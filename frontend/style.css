@@ -1,10 +1,43 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.titlebar {
+  height: 30px;
+  background: #b0b0b0;
+  user-select: none;
+  display: flex;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+}
+.titlebar-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+}
+.titlebar-button:hover {
+  background: #e0e0e0;
+}
+
 .wrapper {
   display: flex;
-  flex-flow: col nowrap;
-  min-height: 100vh;
+  flex-flow: row;
+  flex: 100%;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  align-self: stretch;
+
 }
 
 .wrapper > * {
@@ -12,14 +45,18 @@
 }
 
 #sidebar {
-  flex: 0 200px;
-  min-width: 200px;
+  flex: 0 150px;
+  min-width: 150px;
 }
 
 .slider {
   background-color: darkgray;
   flex: 0 5px;
   cursor: col-resize;
+}
+
+.slider:hover {
+  background-color: rgb(86, 126, 212);
 }
 
 
@@ -32,3 +69,34 @@
 #content > div {
   flex: 1;
 }
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin: 5px;
+}
+
+#filter {
+  min-width: 100px;
+  flex: 100%;
+}
+
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+.nav-main:hover {
+  color: rgb(86, 126, 212);
+}
+
+#settings {
+  padding: 5px;
+}
+
+h1 {
+  font-weight: bold;
+}
+

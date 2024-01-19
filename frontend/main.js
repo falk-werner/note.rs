@@ -6,6 +6,12 @@ import { markdown } from "@codemirror/lang-markdown"
 import { marked } from "marked"
 
 import { slider_attach } from "./slider.js"
+import { init_titlebar } from "./titlebar.js"
+import { init_settings } from "./settings.js"
+
+init_titlebar();
+init_settings();
+slider_attach(document.querySelector("#slider"));
 
 
 const language = new Compartment();
@@ -19,6 +25,7 @@ const editor = new EditorView({
     parent: editor_element
 });
 
+/*
 editor.dom.addEventListener('input', async () => {
   const text = editor.state.doc.toString();
   const html = marked.parse(text, {
@@ -27,5 +34,5 @@ editor.dom.addEventListener('input', async () => {
   });
   document.querySelector("#view").innerHTML = html;
 });
+*/
 
-slider_attach(document.querySelector("#slider"));
