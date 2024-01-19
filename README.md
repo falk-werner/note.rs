@@ -2,46 +2,41 @@
 
 Yet another note taking tool.
 
-## Run in dev mode
+## Build and run
+This project is build with [rust](https://www.rust-lang.org/) and [npm](https://www.npmjs.com/).
+Please see to have it installed beforehand.
 
-```bash
-cargo tauri dev
-```
+Additionally, running `note.rs` will create a __GUI__ and it needs a display for this.
+See to have a setup which enables this.
 
-## Setup environment
-This guide focuses on how to setup your development system based on ubuntu:jammy.
+### Install dependencies
+`note.rs` uses [tauri](https://tauri.app/) and [vite](https://vitejs.dev/).
 
-1. Install dependencies
+<details><summary>How to setup <b>Ubuntu 20.04</b> with tauri and vite.</summary>
+
+1. Install tauri's dependencies
     ```bash
     sudo apt-get update
     sudo apt-get install -y \
         libwebkit2gtk-4.0-dev \
-        build-essential \
-        curl \
-        wget \
-        file \
-        libssl-dev \
         libgtk-3-dev \
         libayatana-appindicator3-dev \
         librsvg2-dev
     ```
-2. Install rust
-    ```bash
-    curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
-    ```
-3. Install npm (node.js)
-    ```bash
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - &&\
-    sudo apt-get install -y nodejs
-    ```
-4. Install tauri crates for development
+2. Install tauri crates
     ```bash
     cargo install tauri-cli
     ```
-5. Download npm packages
+3. Download npm packages including vite
     ```bash
     npm install
     ```
+</details>
+
+### Run in dev mode
+```bash
+cargo tauri dev
+```
 
 ## References
 
