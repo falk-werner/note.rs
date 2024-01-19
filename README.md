@@ -12,8 +12,7 @@ See to have a setup which enables this.
 ### Install dependencies
 `note.rs` uses [tauri](https://tauri.app/) and [vite](https://vitejs.dev/).
 
-<details><summary>How to setup <b>Ubuntu 20.04</b> with tauri and vite.</summary>
-
+How to setup __Ubuntu 20.04__ with tauri and vite:
 1. Install tauri's dependencies
     ```bash
     sudo apt-get update
@@ -31,7 +30,6 @@ See to have a setup which enables this.
     ```bash
     npm install
     ```
-</details>
 
 ### Run in dev mode
 ```bash
