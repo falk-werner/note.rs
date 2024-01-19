@@ -8,11 +8,19 @@ import { marked } from "marked"
 import { slider_attach } from "./slider.js"
 import { init_titlebar } from "./titlebar.js"
 import { init_settings } from "./settings.js"
+import { FakeNoteProvider } from "./fakenoteprovider.js"
+import { NoteList } from "./notelist.js"
 
 init_titlebar();
 init_settings();
 slider_attach(document.querySelector("#slider"));
 
+const noteProvider = new FakeNoteProvider();
+const notelist_element = document.querySelector("#notelist");
+const notelist = new NoteList(noteProvider, notelist_element);
+document.querySelector("#add-note").addEventListener("click", async () => {
+  notelist.add_new();
+})
 
 const language = new Compartment();
 const editor_element = document.querySelector("#editor");
