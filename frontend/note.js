@@ -1,21 +1,27 @@
 class Note {
     #name;
+    #tags;
     #provider;
     #editor;
     #list_item;
     #notelist
 
-    constructor(name, provider, notelist, editor) {
+    constructor(name, tags, provider, notelist, editor) {
         this.#name = name;
+        this.#tags = tags;
         this.#provider = provider;
         this.#editor = editor;
-        this.#notelist = notelist
+        this.#notelist = notelist;
         this.#create_listentry();
     }
 
 
     get name() {
         return this.#name;
+    }
+
+    get tags() {
+        return this.#tags;
     }
 
     async get_content() {
@@ -39,12 +45,20 @@ class Note {
     }
 
     async deactivate() {
-        this.save();
         this.#list_item.classList.remove("active");
     }
 
     async save(name, content, tags) {
+        if (name != this.name) {
+            await this.#provider.rename(this.#name, name);
+            this.#list_item.textContent = name;
+            this.#notelist.rename(this.#name, name);
+            this.#name = name;
+        }
         this.#provider.write(this.#name, content);
+
+        this.#tags = tags;
+        this.#provider.write_tags(this.#name, tags);
     }
 
     async remove() {
