@@ -18,7 +18,6 @@ const init_titlebar = function() {
 
     const nav_main = document.querySelectorAll(".nav-main");
     nav_main.forEach((item) => {
-        console.log("click");
         item.addEventListener('click', () => {
             document.querySelector("#main").classList.remove("hidden");
             document.querySelector("#settings").classList.add("hidden");    
