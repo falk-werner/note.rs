@@ -5,9 +5,9 @@ class Note {
     content;
     tags;
 
-    constructor(name) {
+    constructor(name, content) {
         this.name = name;
-        this.content = "";
+        this.content = content || "";
         this.tags = [];
     }
 }
@@ -19,7 +19,7 @@ class FakeNoteProvider extends NoteProvider {
     constructor() {
         super();
         this.#notes = new Map([
-            ["Sample", new Note("Sample")]
+            ["Sample", new Note("Sample", "# Sample Note\n")]
         ]);
     }
 
@@ -35,7 +35,7 @@ class FakeNoteProvider extends NoteProvider {
 
     async read(name) {
         const note = this.#get_note(name);
-        return note.name;
+        return note.content;
     }
 
     async create() {
