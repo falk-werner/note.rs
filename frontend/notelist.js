@@ -27,12 +27,12 @@ class NoteList {
         }
     }
 
-    async #add(name) {
+    async #add(name, activate) {
         const text = await this.#provider.read(name);
         const tags = await this.#provider.read_tags(name);
         const note = new Note(name, this.#provider, this, this.#editor);
-        this.#notes[name] = note;
-        if (!this.#active_note) {
+        this.#notes.set(name, note);
+        if ((!this.#active_note) || (activate)) {
             this.activate(note);
         }
     }
@@ -51,7 +51,17 @@ class NoteList {
 
     async add_new() {
         const name = await this.#provider.create();
-        this.#add(name);
+        this.#add(name, true);
+    }
+
+    remove(note) {
+        this.#notes.delete(note.name);
+        if (this.#active_note == note) {
+            this.#active_note = null;
+            if (this.#notes.size > 0) {
+                this.activate(this.#notes.values().next().value);
+            }
+        }
     }
 }
 

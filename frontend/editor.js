@@ -4,17 +4,25 @@ import { Compartment, Text } from "@codemirror/state"
 import { markdown } from "@codemirror/lang-markdown"
 import { marked } from "marked"
 
+import { RemoveDialog } from "./removedialog.js"
+
 class Editor {
 
     #title
     #tags
     #active_note
     #editor
+    #remove_dialog
 
     constructor() {
         this.#active_note = null;
         this.#title = document.querySelector("#editor-title");
         this.#tags = document.querySelector("#editor-tags");
+
+        this.#remove_dialog = new RemoveDialog(document.querySelector("#remove-dialog"));
+        document.querySelector("#editor-remove").addEventListener("click", () => { 
+            this.#remove_dialog.show_modal(this.#active_note); 
+        });
 
         const language = new Compartment();
         const editor_element = document.querySelector("#editor");
@@ -61,6 +69,12 @@ class Editor {
         }]});
     }
 
+    remove() {
+        this.#title.value = "";
+        this.#tags.value = "";
+        this.#set_content("");
+        this.#active_note = null;
+    }
 }
 
 export { Editor }

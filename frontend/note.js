@@ -3,12 +3,14 @@ class Note {
     #provider;
     #editor;
     #list_item;
+    #notelist
 
     constructor(name, provider, notelist, editor) {
         this.#name = name;
         this.#provider = provider;
         this.#editor = editor;
-        this.#create_listentry(notelist);
+        this.#notelist = notelist
+        this.#create_listentry();
     }
 
 
@@ -20,13 +22,13 @@ class Note {
         return await this.#provider.read(this.#name);
     }
 
-    #create_listentry(notelist) {
+    #create_listentry() {
         this.#list_item = document.createElement("li");
-        notelist.element.appendChild(this.#list_item);
+        this.#notelist.element.appendChild(this.#list_item);
 
         this.#list_item.textContent = this.#name;
         this.#list_item.addEventListener('click', async () => {
-            notelist.activate(this);
+            this.#notelist.activate(this);
         }, false);
     }
 
@@ -43,6 +45,13 @@ class Note {
 
     async save(name, content, tags) {
         this.#provider.write(this.#name, content);
+    }
+
+    async remove() {
+        await this.#provider.remove(this.#name);
+        this.#list_item.remove();
+        this.#editor.remove();
+        this.#notelist.remove(this);
     }
 }
 
