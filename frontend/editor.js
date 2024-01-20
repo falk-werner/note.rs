@@ -5,6 +5,7 @@ import { markdown } from "@codemirror/lang-markdown"
 import { marked } from "marked"
 
 import { RemoveDialog } from "./removedialog.js"
+import { NotImplementedDialog } from "./notimplementeddialog.js"
 
 class Editor {
 
@@ -19,10 +20,23 @@ class Editor {
         this.#title = document.querySelector("#editor-title");
         this.#tags = document.querySelector("#editor-tags");
 
+        document.querySelector("#editor-save").addEventListener("click", () => {
+            this.#save();
+        });
+
         this.#remove_dialog = new RemoveDialog(document.querySelector("#remove-dialog"));
         document.querySelector("#editor-remove").addEventListener("click", () => { 
             this.#remove_dialog.show_modal(this.#active_note); 
         });
+
+        const notImplementedDialog = new NotImplementedDialog();
+        document.querySelector("#editor-screenshot").addEventListener("click", () => {
+            notImplementedDialog.showModal();
+        });
+        document.querySelector("#editor-open-folder").addEventListener("click", () => {
+            notImplementedDialog.showModal();
+        });
+        
 
         const language = new Compartment();
         const editor_element = document.querySelector("#editor");
@@ -49,16 +63,21 @@ class Editor {
     }
 
     async set_note(note) {
+        this.#save();
+        this.#active_note = note;
+        this.#title.value = note.name;
+        this.#tags.value = note.tags.join(" ");
+        
+        this.#set_content(await note.get_content());
+    }
+
+    #save() {
         if (this.#active_note) {
             this.#active_note.save(
                 this.#title.value,
                 this.#editor.state.doc.toString(),
                 this.#tags.value.split(" "));
         }
-        this.#active_note = note;
-        this.#title.value = note.name;
-        
-        this.#set_content(await note.get_content());
     }
 
     #set_content(content) {

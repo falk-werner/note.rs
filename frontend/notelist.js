@@ -28,9 +28,8 @@ class NoteList {
     }
 
     async #add(name, activate) {
-        const text = await this.#provider.read(name);
         const tags = await this.#provider.read_tags(name);
-        const note = new Note(name, this.#provider, this, this.#editor);
+        const note = new Note(name, tags, this.#provider, this, this.#editor);
         this.#notes.set(name, note);
         if ((!this.#active_note) || (activate)) {
             this.activate(note);
@@ -52,6 +51,14 @@ class NoteList {
     async add_new() {
         const name = await this.#provider.create();
         this.#add(name, true);
+    }
+
+    rename(old_name, new_name) {
+        if (this.#notes.has(old_name)) {
+            const note = this.#notes.get(old_name);
+            this.#notes.delete(old_name);
+            this.#notes.set(new_name, note);
+        }
     }
 
     remove(note) {

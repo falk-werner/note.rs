@@ -25,7 +25,9 @@ class FakeNoteProvider extends NoteProvider {
 
     #get_note(name) {
         const note = this.#notes.get(name);
-        if (!note) { throw new Error(`unknown note \"${name}\"`); }
+        if (!note) { 
+            throw new Error(`unknown note \"${name}\"`); 
+        }
         return note;
     }
 
