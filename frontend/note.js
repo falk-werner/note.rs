@@ -76,7 +76,7 @@ class Note {
 
     applyFilter(filter) {
         const name = this.#name.toLowerCase();
-        const content = this.#name.toLowerCase();
+        const content = this.#content.toLowerCase();
         if ((name.includes(filter)) || (content.includes(filter))) {
             this.#list_item.classList.remove('hidden');
         }
