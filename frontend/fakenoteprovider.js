@@ -5,10 +5,10 @@ class Note {
     content;
     tags;
 
-    constructor(name, content) {
+    constructor(name, content, tags) {
         this.name = name;
         this.content = content || "";
-        this.tags = [];
+        this.tags = tags || [];
     }
 }
 
@@ -19,7 +19,7 @@ class FakeNoteProvider extends NoteProvider {
     constructor() {
         super();
         this.#notes = new Map([
-            ["Sample", new Note("Sample", "# Sample Note\n")]
+            ["Sample", new Note("Sample", "# Sample Note\n", ["Sample"])]
         ]);
     }
 

@@ -5,18 +5,21 @@ class NoteList {
     #provider
     #element;
     #filter;
+    #taglist;
     #editor;
     #notes;
     #active_note;
 
-    constructor(provider, element, filter, editor) {
+    constructor(provider, element, filter, taglist, editor) {
         this.#provider = provider;
         this.#element = element;
         this.#filter = filter;
+        this.#taglist = taglist;
         this.#editor = editor;
         this.#active_note = null;
 
-        this.#filter.addEventListener('input', () => this.applyFilter());
+        this.#filter.addEventListener('input', () => this.apply_filter());
+        this.#taglist.change_handler = () => { this.apply_filter() };
         this.#update();
     }
 
@@ -33,7 +36,7 @@ class NoteList {
     async #add(name, activate) {
         const content = await this.#provider.read(name);
         const tags = await this.#provider.read_tags(name);
-        const note = new Note(name, content, tags, this.#provider, this, this.#editor);
+        const note = new Note(name, content, tags, this.#provider, this, this.#taglist, this.#editor);
         this.#notes.set(name, note);
         if ((!this.#active_note) || (activate)) {
             this.activate(note);
@@ -75,10 +78,12 @@ class NoteList {
         }
     }
 
-    applyFilter() {
+    apply_filter() {
         const filter = this.#filter.value.toLowerCase();
+        const tags = this.#taglist.active_tags;
+
         for(const note of this.#notes.values()) {
-            note.applyFilter(filter);
+            note.apply_filter(filter, tags);
         }
     }
 }

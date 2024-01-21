@@ -1,17 +1,34 @@
+
+function arrays_equals(a, b) {
+    if (a.length != b.length) { 
+        return false;
+    }
+
+    for(const item of a) {
+        if (!b.includes(a)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 class Note {
     #name;
     #content;
     #tags;
     #provider;
+    #taglist;
     #editor;
     #list_item;
-    #notelist
+    #notelist;
 
-    constructor(name, content, tags, provider, notelist, editor) {
+    constructor(name, content, tags, provider, notelist, taglist, editor) {
         this.#name = name;
         this.#content = content;
         this.#tags = tags;
         this.#provider = provider;
+        this.#taglist = taglist;
         this.#editor = editor;
         this.#notelist = notelist;
         this.#create_listentry();
@@ -60,11 +77,14 @@ class Note {
 
         if (content != this.#content) {
             this.#content = content;
-            this.#provider.write(this.#name, content);
+            await this.#provider.write(this.#name, content);
         }
 
-        this.#tags = tags;
-        this.#provider.write_tags(this.#name, tags);
+        if (!arrays_equals(this.#tags, tags)) {
+            this.#tags = tags;
+            await this.#provider.write_tags(this.#name, tags);
+            this.#taglist.update();    
+        }
     }
 
     async remove() {
@@ -74,10 +94,26 @@ class Note {
         this.#notelist.remove(this);
     }
 
-    applyFilter(filter) {
+    #filter_by_tags(tags) {
+        if (tags.length == 0) {
+            return true;
+        }
+
+        for(let tag of this.#tags) {
+            tag = tag.toLowerCase();
+            if (tags.includes(tag)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    apply_filter(filter, tags) {
         const name = this.#name.toLowerCase();
         const content = this.#content.toLowerCase();
-        if ((name.includes(filter)) || (content.includes(filter))) {
+        if ( (this.#filter_by_tags(tags)) &&
+             ((name.includes(filter)) || (content.includes(filter))) ) {
             this.#list_item.classList.remove('hidden');
         }
         else {
