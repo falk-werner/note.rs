@@ -14,6 +14,21 @@ init_settings();
 slider_attach(document.querySelector("#slider"));
 
 const editor = new Editor();
+editor.mode_change_handler = () => {
+  const icon = document.querySelector("#toggle-mode > i");
+  if (editor.mode == "edit") {
+      icon.classList.add("lni-pencil");
+      icon.classList.remove("lni-eye");
+  }
+  else {
+      icon.classList.add("lni-eye");
+      icon.classList.remove("lni-pencil");
+  }
+};
+document.querySelector("#toggle-mode").addEventListener("click", () => {
+  editor.mode = (editor.mode == "edit") ? "view" : "edit";
+});
+
 
 const noteProvider = new FakeNoteProvider();
 

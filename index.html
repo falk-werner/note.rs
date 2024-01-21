@@ -10,6 +10,9 @@
     <div class="titlebar-button" id="add-note">
       <i class="lni lni-empty-file"></i>
     </div>
+    <div class="titlebar-button" id="toggle-mode">
+      <i class="lni lni-eye"></i>
+    </div>
     <div data-tauri-drag-region style="line-height: 30px; flex: 100%; text-align: center;">
       note.rs
     </div>
@@ -41,7 +44,7 @@
       <ul id="notelist"></ul>
     </div>
     <div id="slider" data-slider-target="sidebar" class="slider"></div>
-    <div id="content">
+    <div id="content" class="hidden">
       <div class="toolbar">
         <label class="lni lni-pencil"></label>
         <input type="text" id="editor-title"/>
@@ -57,8 +60,8 @@
       </div>
       <hr/>
       <div id="editor"></div>
-      <!-- <div id="view"></div> -->
     </div>  
+    <div id="view"></div>
   </div>
 
   <div id="settings" class="hidden">    
