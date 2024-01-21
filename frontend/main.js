@@ -16,7 +16,8 @@ const editor = new Editor();
 
 const noteProvider = new FakeNoteProvider();
 const notelist_element = document.querySelector("#notelist");
-const notelist = new NoteList(noteProvider, notelist_element, editor);
+const filter_element = document.querySelector('#filter');
+const notelist = new NoteList(noteProvider, notelist_element, filter_element, editor);
 document.querySelector("#add-note").addEventListener("click", async () => {
   notelist.add_new();
 })
