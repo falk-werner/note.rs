@@ -76,7 +76,7 @@ class Editor {
             await this.#active_note.save(
                 this.#title.value,
                 this.#editor.state.doc.toString(),
-                this.#tags.value.split(" "));
+                this.#tags.value.split(" ").filter((item) => item != ""));
         }
     }
 
