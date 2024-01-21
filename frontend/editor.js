@@ -13,12 +13,19 @@ class Editor {
     #tags
     #active_note
     #editor
+    #content_element
+    #view
     #remove_dialog
+    #mode
+    #mode_change_handler
 
     constructor() {
         this.#active_note = null;
         this.#title = document.querySelector("#editor-title");
         this.#tags = document.querySelector("#editor-tags");
+        this.#view = document.querySelector("#view");
+        this.#content_element = document.querySelector("#content");
+        this.#mode_change_handler = () => {};
 
         document.querySelector("#editor-save").addEventListener("click", () => {
             this.#save();
@@ -49,17 +56,41 @@ class Editor {
             parent: editor_element
         });
 
-        /*
-        editor.dom.addEventListener('input', async () => {
-        const text = editor.state.doc.toString();
-        const html = marked.parse(text, {
-            pedantic: false,
-            gfm: true
-        });
-        document.querySelector("#view").innerHTML = html;
-        });
-        */
+        this.mode = "view";
+    }
 
+    get mode() {
+        return this.#mode;
+    }
+
+    set mode(new_mode) {
+        switch (new_mode) {
+            case "edit":
+                this.#mode = "edit";
+                this.#view.classList.add("hidden");
+                this.#content_element.classList.remove("hidden");
+                break;
+            case "view":
+                // fall-through
+            default:
+                this.#mode = "view";
+                this.#view.classList.remove("hidden");
+                this.#content_element.classList.add("hidden");
+
+                const content = this.#editor.state.doc.toString();
+                const html = marked.parse(content, {
+                    pedantic: false,
+                    gfm: true
+                });
+                this.#view.innerHTML = html;        
+                break;
+        }
+
+        this.#mode_change_handler();
+    }
+
+    set mode_change_handler(handler) {
+        this.#mode_change_handler = handler;
     }
 
     async set_note(note) {
@@ -86,6 +117,12 @@ class Editor {
             to: this.#editor.state.doc.length,
             insert: content
         }]});
+
+        const html = marked.parse(content, {
+            pedantic: false,
+            gfm: true
+        });
+        this.#view.innerHTML = html;
     }
 
     remove() {

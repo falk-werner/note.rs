@@ -58,6 +58,7 @@ class NoteList {
     async add_new() {
         const name = await this.#provider.create();
         this.#add(name, true);
+        this.#editor.mode = "edit";
     }
 
     rename(old_name, new_name) {
