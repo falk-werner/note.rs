@@ -63,17 +63,17 @@ class Editor {
     }
 
     async set_note(note) {
-        this.#save();
+        await this.#save();
         this.#active_note = note;
         this.#title.value = note.name;
         this.#tags.value = note.tags.join(" ");
         
-        this.#set_content(await note.get_content());
+        this.#set_content(note.content);
     }
 
-    #save() {
+    async #save() {
         if (this.#active_note) {
-            this.#active_note.save(
+            await this.#active_note.save(
                 this.#title.value,
                 this.#editor.state.doc.toString(),
                 this.#tags.value.split(" "));

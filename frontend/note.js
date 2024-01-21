@@ -1,13 +1,15 @@
 class Note {
     #name;
+    #content;
     #tags;
     #provider;
     #editor;
     #list_item;
     #notelist
 
-    constructor(name, tags, provider, notelist, editor) {
+    constructor(name, content, tags, provider, notelist, editor) {
         this.#name = name;
+        this.#content = content;
         this.#tags = tags;
         this.#provider = provider;
         this.#editor = editor;
@@ -24,8 +26,8 @@ class Note {
         return this.#tags;
     }
 
-    async get_content() {
-        return await this.#provider.read(this.#name);
+    get content() {
+        return this.#content;
     }
 
     #create_listentry() {
@@ -49,13 +51,17 @@ class Note {
     }
 
     async save(name, content, tags) {
-        if (name != this.name) {
+        if (name != this.#name) {
             await this.#provider.rename(this.#name, name);
             this.#list_item.textContent = name;
             this.#notelist.rename(this.#name, name);
             this.#name = name;
         }
-        this.#provider.write(this.#name, content);
+
+        if (content != this.#content) {
+            this.#content = content;
+            this.#provider.write(this.#name, content);
+        }
 
         this.#tags = tags;
         this.#provider.write_tags(this.#name, tags);
@@ -66,6 +72,17 @@ class Note {
         this.#list_item.remove();
         this.#editor.remove();
         this.#notelist.remove(this);
+    }
+
+    applyFilter(filter) {
+        const name = this.#name.toLowerCase();
+        const content = this.#name.toLowerCase();
+        if ((name.includes(filter)) || (content.includes(filter))) {
+            this.#list_item.classList.remove('hidden');
+        }
+        else {
+            this.#list_item.classList.add('hidden');
+        }
     }
 }
 
