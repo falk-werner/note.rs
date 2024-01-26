@@ -13,7 +13,7 @@ fn main() {
     .expect("error while running tauri application");
 }
 
-/// list all directories that have a `README.md` file inside
+/// list the names of the notes, which is the list of all directories in the base directory  that have a `README.md` file inside
 #[tauri::command]
 async fn list() -> Vec<String> {
   let base_path = Path::new(home_dir().unwrap().as_path()).join(".notes");
