@@ -41,9 +41,8 @@ fn get_notes(base_path: PathBuf) -> Result<Vec<String>> {
 fn get_note_readme(dir_entry: Result<DirEntry>) -> Result<String> {
   let dir_entry = dir_entry?;
   if dir_entry.file_type()?.is_dir() {
-    let readme_path = Path::new(&dir_entry.file_name()).join("README.md");
-    if readme_path.as_path().is_file() {
-      return Ok(readme_path.to_str().unwrap().to_string());
+    if Path::new(&dir_entry.path()).join("README.md").is_file() {
+      return Ok(dir_entry.file_name().into_string().unwrap());
     }
   }
   return Err(Error::new(std::io::ErrorKind::NotFound, "README.md not found."))
