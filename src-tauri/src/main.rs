@@ -47,7 +47,12 @@ fn get_readme_dir(dir_entry: Result<DirEntry>) -> Result<String> {
       return Ok(dir_entry.file_name().into_string().unwrap());
     }
   }
-  return Err(Error::new(std::io::ErrorKind::NotFound, "README.md not found."))
+  return Err(
+    Error::new(
+      std::io::ErrorKind::NotFound,
+      format!("README.md not found for {}.", dir_entry.path().to_str().unwrap().to_string())
+    )
+  )
 }
 
 fn error_handling(e: String) {
