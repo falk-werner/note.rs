@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::path::Path;
+use std::{fs::DirEntry, io::{Error, Result}, path::{Path, PathBuf}};
 use tauri::api::path::home_dir;
 
 fn main() {
@@ -17,34 +17,36 @@ fn main() {
 #[tauri::command]
 async fn list() -> Vec<String> {
   let base_path = Path::new(home_dir().unwrap().as_path()).join(".notes");
-  let mut notes = Vec::<String>::new();  
-  // read all files in dir
-  match std::fs::read_dir(base_path) {
-    Ok(dir_entries) => {
-      for dir_entry in dir_entries {
-        match dir_entry {
-          Ok(dir_entry) => {
-            match dir_entry.file_type() {
-              Ok(file_type) => {
-                if file_type.is_dir() {
-                  let readme_path = Path::new(&dir_entry.file_name()).join("README.md");
-                  if readme_path.as_path().exists() && readme_path.to_str().is_some() {
-                    notes.push(readme_path.to_str().unwrap_or_default().to_string())
-                  } else {
-                    error_handling(format!("{readme_path:?}"));
-                  }
-                }
-              }
-              Err(e) => { error_handling(e.to_string()); }
-            }
-          }
-          Err(e) => { error_handling(e.to_string()); }
-        }
-      }
+  match get_notes(base_path) {
+    Ok(readmes) => {
+      return readmes;
     }
     Err(e) => { error_handling(e.to_string()); }
   }
-  return notes
+  return Vec::<String>::new();
+}
+
+fn get_notes(base_path: PathBuf) -> Result<Vec<String>> {
+  let mut notes = Vec::<String>::new();
+  let dir_entries = std::fs::read_dir(base_path)?;
+  for dir_entry in dir_entries {
+    match get_note_readme(dir_entry) {
+      Ok(readme_path) => notes.push(readme_path),
+      Err(e) => error_handling(e.to_string())
+    }
+  }
+  return Ok(notes)
+}
+
+fn get_note_readme(dir_entry: Result<DirEntry>) -> Result<String> {
+  let dir_entry = dir_entry?;
+  if dir_entry.file_type()?.is_dir() {
+    let readme_path = Path::new(&dir_entry.file_name()).join("README.md");
+    if readme_path.as_path().is_file() {
+      return Ok(readme_path.to_str().unwrap().to_string());
+    }
+  }
+  return Err(Error::new(std::io::ErrorKind::NotFound, "README.md not found."))
 }
 
 fn error_handling(e: String) {
