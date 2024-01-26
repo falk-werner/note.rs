@@ -50,7 +50,7 @@ fn get_note_name(dir_entry: Result<DirEntry>) -> Result<String> {
   return Err(
     Error::new(
       std::io::ErrorKind::NotFound,
-      format!("README.md not found for {}.", dir_entry.path().to_str().unwrap().to_string())
+      format!("README.md not found for `{}`.", dir_entry.path().to_str().unwrap().to_string())
     )
   )
 }
