@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use tauri::{api::path::home_dir, Runtime};
+use tauri::api::path::home_dir;
 
 fn main() {
   tauri::Builder::default()
@@ -16,7 +16,7 @@ fn main() {
 
 /// list all possible README.md locations in dirs of the save dir
 #[tauri::command]
-async fn list<R: Runtime>(app: tauri::AppHandle<R>, window: tauri::Window<R>) -> Result<Vec<String>, String> {
+async fn list() -> Result<Vec<String>, String> {
   let base_path = Path::new(home_dir().unwrap().as_path()).join(".notes");
   
   let mut notes = Vec::<String>::new();
