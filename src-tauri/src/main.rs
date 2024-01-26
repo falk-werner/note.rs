@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use tauri::api::path::home_dir;
+use tauri::{api::path::home_dir, Runtime};
 
 fn main() {
   tauri::Builder::default()
@@ -14,31 +14,35 @@ fn main() {
     .expect("error while running tauri application");
 }
 
+/// list all possible README.md locations in dirs of the save dir
 #[tauri::command]
-fn list() -> Vec<String> {
+async fn list<R: Runtime>(app: tauri::AppHandle<R>, window: tauri::Window<R>) -> Result<Vec<String>, String> {
   let base_path = Path::new(home_dir().unwrap().as_path()).join(".notes");
   
   let mut notes = Vec::<String>::new();
 
+  // read all files in dir
   match std::fs::read_dir(base_path) {
     Ok(dir_entries) => {
       for dir_entry in dir_entries {
         match dir_entry {
           Ok(dir_entry) => {
+            // filter for directories
             match dir_entry.file_type() {
               Ok(file_type) => {
                 if file_type.is_dir() {
+                  // add README.md to the found dir names and save them in list
                   notes.push(Path::new(&dir_entry.file_name()).join("README.md").to_str().unwrap().to_string());
                 }
               }
-              Err(e) => { panic!("Error: {:?}", e) }
+              Err(e) => { return Err(e.to_string()) }
             }
           }
-          Err(e) => { panic!("Error: {:?}", e) }
+          Err(e) => { return Err(e.to_string()) }
         }
       }
     }
-    Err(e) => { panic!("Error: {:?}", e) }
+    Err(e) => { return Err(e.to_string()) }
   }
-  return notes
+  return Ok(notes)
 }
