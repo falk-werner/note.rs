@@ -13,7 +13,7 @@ fn main() {
     .expect("error while running tauri application");
 }
 
-/// list all possible README.md locations in dirs of the save dir
+/// list all directories that have a `README.md` file inside
 #[tauri::command]
 async fn list() -> Vec<String> {
   let base_path = Path::new(home_dir().unwrap().as_path()).join(".notes");
@@ -26,6 +26,7 @@ async fn list() -> Vec<String> {
   return Vec::<String>::new();
 }
 
+/// list all directories in `base_path` that have a `README.md` file inside
 fn get_readme_dirs(base_path: PathBuf) -> Result<Vec<String>> {
   let mut readme_dirs = Vec::<String>::new();
   let dir_entries = std::fs::read_dir(base_path)?;
@@ -38,6 +39,7 @@ fn get_readme_dirs(base_path: PathBuf) -> Result<Vec<String>> {
   return Ok(readme_dirs)
 }
 
+/// check if the `dir_entry` contains a `README.md` file inside and returns the folder name if so
 fn get_readme_dir(dir_entry: Result<DirEntry>) -> Result<String> {
   let dir_entry = dir_entry?;
   if dir_entry.file_type()?.is_dir() {
@@ -50,5 +52,5 @@ fn get_readme_dir(dir_entry: Result<DirEntry>) -> Result<String> {
 
 fn error_handling(e: String) {
   // implementation up to discussion
-  eprintln!("{e}");
+  eprintln!("Warning: {e}");
 }
