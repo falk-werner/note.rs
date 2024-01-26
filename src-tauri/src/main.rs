@@ -22,10 +22,10 @@ async fn list() -> Result<Vec<String>, String> {
   let mut notes = Vec::<String>::new();
 
   // read all files in dir
-  let dir_entries = std::fs::read_dir(base_path).map_err(|err| return err.to_string())?;
+  let dir_entries = std::fs::read_dir(base_path).map_err(|err| err.to_string())?;
   for dir_entry in dir_entries {
-    let dir_entry = dir_entry.map_err(|err| return err.to_string())?;
-    let file_type = dir_entry.file_type().map_err(|err| return err.to_string())?;
+    let dir_entry = dir_entry.map_err(|err| err.to_string())?;
+    let file_type = dir_entry.file_type().map_err(|err| err.to_string())?;
     if file_type.is_dir() {
       // add README.md to the found dir names and save them in list
       notes.push(Path::new(&dir_entry.file_name()).join("README.md").to_str().unwrap_or_default().to_string());
