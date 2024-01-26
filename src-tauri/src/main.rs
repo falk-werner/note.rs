@@ -28,7 +28,7 @@ async fn list() -> Result<Vec<String>, String> {
     let file_type = dir_entry.file_type().map_err(|err| return err.to_string())?;
     if file_type.is_dir() {
       // add README.md to the found dir names and save them in list
-      notes.push(Path::new(&dir_entry.file_name()).join("README.md").to_str().unwrap().to_string());
+      notes.push(Path::new(&dir_entry.file_name()).join("README.md").to_str().unwrap_or_default().to_string());
     }
   }
   return Ok(notes)
