@@ -35,14 +35,23 @@ async fn list<R: Runtime>(app: tauri::AppHandle<R>, window: tauri::Window<R>) ->
                   notes.push(Path::new(&dir_entry.file_name()).join("README.md").to_str().unwrap().to_string());
                 }
               }
-              Err(e) => { return Err(e.to_string()) }
+              Err(e) => { 
+                // error while figuring out the type of each file in the dir
+                return Err(e.to_string())
+              }
             }
           }
-          Err(e) => { return Err(e.to_string()) }
+          Err(e) => { 
+            // error while reading each object in dir
+            return Err(e.to_string()) 
+          }
         }
       }
     }
-    Err(e) => { return Err(e.to_string()) }
+    Err(e) => { 
+      // error while reading the dir
+      return Err(e.to_string())
+    }
   }
   return Ok(notes)
 }
