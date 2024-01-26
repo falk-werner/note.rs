@@ -17,30 +17,28 @@ fn main() {
 #[tauri::command]
 async fn list() -> Vec<String> {
   let base_path = Path::new(home_dir().unwrap().as_path()).join(".notes");
-  match get_readme_dirs(base_path) {
-    Ok(readme_dirs) => {
-      return readme_dirs;
-    }
-    Err(e) => { error_handling(e.to_string()); }
+  match get_note_names(base_path) {
+    Ok(note_names) => return note_names,
+    Err(e) => error_handling(e.to_string())
   }
   return Vec::<String>::new();
 }
 
 /// list all directories in `base_path` that have a `README.md` file inside
-fn get_readme_dirs(base_path: PathBuf) -> Result<Vec<String>> {
-  let mut readme_dirs = Vec::<String>::new();
+fn get_note_names(base_path: PathBuf) -> Result<Vec<String>> {
+  let mut note_names = Vec::<String>::new();
   let dir_entries = std::fs::read_dir(base_path)?;
   for dir_entry in dir_entries {
-    match get_readme_dir(dir_entry) {
-      Ok(readme_dir) => readme_dirs.push(readme_dir),
+    match get_note_name(dir_entry) {
+      Ok(note_name) => note_names.push(note_name),
       Err(e) => error_handling(e.to_string())
     }
   }
-  return Ok(readme_dirs)
+  return Ok(note_names)
 }
 
 /// check if the `dir_entry` contains a `README.md` file inside and returns the folder name if so
-fn get_readme_dir(dir_entry: Result<DirEntry>) -> Result<String> {
+fn get_note_name(dir_entry: Result<DirEntry>) -> Result<String> {
   let dir_entry = dir_entry?;
   if dir_entry.file_type()?.is_dir() {
     if Path::new(&dir_entry.path()).join("README.md").is_file() {
