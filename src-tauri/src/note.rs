@@ -1,22 +1,22 @@
 use std::{fs::DirEntry, io::{Error, Result}, path::{Path, PathBuf}};
 use crate::config::{Config};
 
-pub struct Note {
+pub struct Notebook {
     config: Config
 }
 
-impl Note {
+impl Notebook {
 
     /// Creates a new Note struct.
     pub fn new(config: Config) -> Self {
-        Note { config }
+        Notebook { config }
     }
 
 
     /// list the names of the notes
     /// 
     /// list all directories in the base directory that have a `README.md` file inside
-    pub fn list(&self) -> Vec<String> {
+    pub fn list_notes(&self) -> Vec<String> {
         let base_path = self.config.get_base_path().join(".notes");
         match get_note_names(base_path) {
           Ok(note_names) => return note_names,
