@@ -22,13 +22,14 @@ fn main() {
 /// 
 /// list all directories in the base directory that have a `README.md` file inside
 #[tauri::command]
-fn list(config: tauri::State<'_, Config>) -> Vec<String> {
+async fn list(config: tauri::State<'_, Config>) -> std::result::Result<Vec<String>, String> {
   let base_path = config.get_base_path().join(".notes");
   match get_note_names(base_path) {
-    Ok(note_names) => return note_names,
+    Ok(note_names) => return Ok(note_names),
     Err(e) => error_handling(e.to_string())
   }
-  Vec::<String>::new()
+
+  Ok(Vec::<String>::new())
 }
 
 /// list all directories in `base_path` that have a `README.md` file inside
