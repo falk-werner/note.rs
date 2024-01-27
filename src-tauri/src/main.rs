@@ -2,10 +2,15 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::{fs::DirEntry, io::{Error, Result}, path::{Path, PathBuf}};
-use tauri::api::path::home_dir;
+
+mod config;
+use config::{Config};
 
 fn main() {
+  let config = Config::from_default_file();
+
   tauri::Builder::default()
+    .manage(config)
     .invoke_handler(tauri::generate_handler![
       list
       ])
@@ -17,8 +22,8 @@ fn main() {
 /// 
 /// list all directories in the base directory that have a `README.md` file inside
 #[tauri::command]
-async fn list() -> Vec<String> {
-  let base_path = Path::new(home_dir().unwrap().as_path()).join(".notes");
+fn list(config: tauri::State<'_, Config>) -> Vec<String> {
+  let base_path = config.get_base_path().join(".notes");
   match get_note_names(base_path) {
     Ok(note_names) => return note_names,
     Err(e) => error_handling(e.to_string())
