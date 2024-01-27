@@ -28,7 +28,6 @@ async fn list(config: tauri::State<'_, Config>) -> std::result::Result<Vec<Strin
     Ok(note_names) => return Ok(note_names),
     Err(e) => error_handling(e.to_string())
   }
-
   Ok(Vec::<String>::new())
 }
 
