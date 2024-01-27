@@ -28,4 +28,4 @@ home = "0.5.9"
 custom-protocol = [ "tauri/custom-protocol" ]
 
 [dev-dependencies]
-tempdir = "0.3.7"
+tempfile = "3.9.0"
