@@ -32,6 +32,7 @@ fn get_home_dir() -> PathBuf {
     home_dir().unwrap_or(PathBuf::from("."))
 }
 
+#[derive(Debug)]
 struct ConfigError {
     message: String
 }
@@ -51,9 +52,9 @@ impl<E: Display> From<E> for ConfigError {
 impl Config {
 
     /// Creates a new config with default values.
-    fn new() -> Self {
+    fn new(filename: &Path) -> Self {
         Config {
-            filename: get_home_dir().join(DEFAULT_CONFIG_FILENAME).as_path().into(),
+            filename: filename.into(),
             config_file: { 
                 ConfigFile {
                     meta: {
@@ -83,7 +84,7 @@ impl Config {
             Ok(config) => config,
             Err(error) => {
                 eprintln!("warning: failed to load config {:?}: {}", filename, error.message);
-                let config = Config::new();
+                let config = Config::new(filename.as_path());
                 config.save();
                 config
             }
@@ -134,24 +135,116 @@ mod tests {
 
 use crate::Config;
 use crate::config::{get_home_dir};
+use tempdir::TempDir;
+use std::fs;
+use std::path::{PathBuf};
 
 #[test]
 fn create_default_config() {
-    let config = Config::new();
+    let path = PathBuf::from("/test/config.yaml");
+    let config = Config::new(path.as_path());
 
     assert_eq!(1, config.config_file.meta.version);
-    assert_eq!(".noters.yaml", config.filename.file_name().unwrap());
+    assert_eq!(*path, *config.filename);
     assert_eq!("{home}/.notes", config.config_file.values.base_dir);
 }
 
 #[test]
 fn get_base_path_resolves_home() {
-    let config = Config::new();
+    let path = PathBuf::from("/test/config.yaml");
+    let config = Config::new(path.as_path());
 
     let expected = get_home_dir().join(".notes");
     let actual = config.get_base_path();
 
     assert_eq!(expected, actual);
+}
+
+#[test]
+fn load_config_from_file() {
+    let text = br##"meta:
+  version: 1
+values:
+  base_dir: '/path/to/notes'"##;
+
+    let temp_dir = TempDir::new("noters-test").unwrap();
+    let config_path = temp_dir.path().join("config.yaml");
+    fs::write(config_path.clone(), text).unwrap();
+
+    let config = Config::from_file(config_path.as_path()).unwrap();
+    assert_eq!("/path/to/notes", config.config_file.values.base_dir);
+
+    let _ = temp_dir.close();
+}
+
+#[test]
+fn fail_to_load_non_existing_config_file() {
+    let temp_dir = TempDir::new("noters-test").unwrap();
+    let config_path = temp_dir.path().join("config.yaml");
+
+    let config = Config::from_file(config_path.as_path());
+    assert!(config.is_err());
+
+    let _ = temp_dir.close();
+}
+
+#[test]
+fn fail_to_load_invalid_config_file() {
+    let text = br##"\t this is not yaml"##;
+
+    let temp_dir = TempDir::new("noters-test").unwrap();
+    let config_path = temp_dir.path().join("config.yaml");
+    fs::write(config_path.clone(), text).unwrap();
+
+    let config = Config::from_file(config_path.as_path());
+    assert!(config.is_err());
+
+    let _ = temp_dir.close();
+}
+
+#[test]
+fn fail_to_load_config_file_with_wrong_version() {
+    let text = br##"meta:
+  version: 0
+values:
+  base_dir: '/path/to/notes'"##;
+
+    let temp_dir = TempDir::new("noters-test").unwrap();
+    let config_path = temp_dir.path().join("config.yaml");
+    fs::write(config_path.clone(), text).unwrap();
+
+    let config = Config::from_file(config_path.as_path());
+    assert!(config.is_err());
+
+    let _ = temp_dir.close();
+}
+
+#[test]
+fn save_config_file() {
+    let temp_dir = TempDir::new("noters-test").unwrap();
+    let config_path = temp_dir.path().join("config.yaml");
+
+    let config = Config::new(config_path.as_path());
+    config.save();
+
+    let config = Config::from_file(config_path.as_path());
+    assert!(config.is_ok());
+
+    let _ = temp_dir.close();
+}
+
+#[test]
+fn save_does_not_fail_if_config_file_cannot_be_written() {
+    let temp_dir = TempDir::new("noters-test").unwrap();
+    let config_path = temp_dir.path().join("non-existing-dir").join("config.yaml");
+
+    let config = Config::new(config_path.as_path());
+    config.save();
+
+    let config = Config::from_file(config_path.as_path());
+    assert!(config.is_err());
+
+    let _ = temp_dir.close();
 }
 
 
