@@ -135,7 +135,7 @@ mod tests {
 
 use crate::Config;
 use crate::config::{get_home_dir};
-use tempdir::TempDir;
+use tempfile::tempdir;
 use std::fs;
 use std::path::{PathBuf};
 
@@ -167,7 +167,7 @@ fn load_config_from_file() {
 values:
   base_dir: '/path/to/notes'"##;
 
-    let temp_dir = TempDir::new("noters-test").unwrap();
+    let temp_dir = tempdir().unwrap();
     let config_path = temp_dir.path().join("config.yaml");
     fs::write(config_path.clone(), text).unwrap();
 
@@ -179,7 +179,7 @@ values:
 
 #[test]
 fn fail_to_load_non_existing_config_file() {
-    let temp_dir = TempDir::new("noters-test").unwrap();
+    let temp_dir = tempdir().unwrap();
     let config_path = temp_dir.path().join("config.yaml");
 
     let config = Config::from_file(config_path.as_path());
@@ -192,7 +192,7 @@ fn fail_to_load_non_existing_config_file() {
 fn fail_to_load_invalid_config_file() {
     let text = br##"\t this is not yaml"##;
 
-    let temp_dir = TempDir::new("noters-test").unwrap();
+    let temp_dir = tempdir().unwrap();
     let config_path = temp_dir.path().join("config.yaml");
     fs::write(config_path.clone(), text).unwrap();
 
@@ -209,7 +209,7 @@ fn fail_to_load_config_file_with_wrong_version() {
 values:
   base_dir: '/path/to/notes'"##;
 
-    let temp_dir = TempDir::new("noters-test").unwrap();
+    let temp_dir = tempdir().unwrap();
     let config_path = temp_dir.path().join("config.yaml");
     fs::write(config_path.clone(), text).unwrap();
 
@@ -221,7 +221,7 @@ values:
 
 #[test]
 fn save_config_file() {
-    let temp_dir = TempDir::new("noters-test").unwrap();
+    let temp_dir = tempdir().unwrap();
     let config_path = temp_dir.path().join("config.yaml");
 
     let config = Config::new(config_path.as_path());
@@ -235,7 +235,7 @@ fn save_config_file() {
 
 #[test]
 fn save_does_not_fail_if_config_file_cannot_be_written() {
-    let temp_dir = TempDir::new("noters-test").unwrap();
+    let temp_dir = tempdir().unwrap();
     let config_path = temp_dir.path().join("non-existing-dir").join("config.yaml");
 
     let config = Config::new(config_path.as_path());
