@@ -28,7 +28,6 @@ async fn list(config: tauri::State<'_, Config>) -> std::result::Result<Vec<Strin
     Ok(note_names) => return Ok(note_names),
     Err(e) => error_handling(e.to_string())
   }
-
   Ok(Vec::<String>::new())
 }
 
@@ -42,21 +41,19 @@ fn get_note_names(base_path: PathBuf) -> Result<Vec<String>> {
       Err(e) => error_handling(e.to_string())
     }
   }
-  return Ok(note_names)
+  Ok(note_names)
 }
 
 /// check if the `dir_entry` contains a `README.md` file inside and returns the folder name if so
 fn get_note_name(dir_entry: Result<DirEntry>) -> Result<String> {
   let dir_entry = dir_entry?;
-  if dir_entry.file_type()?.is_dir() {
-    if Path::new(&dir_entry.path()).join("README.md").is_file() {
-      return Ok(dir_entry.file_name().into_string().unwrap());
-    }
+  if dir_entry.file_type()?.is_dir() && Path::new(&dir_entry.path()).join("README.md").is_file() {
+    return Ok(dir_entry.file_name().into_string().unwrap());
   }
-  return Err(
+  Err(
     Error::new(
       std::io::ErrorKind::NotFound,
-      format!("README.md not found for `{}`.", dir_entry.path().to_str().unwrap().to_string())
+      format!("README.md not found for `{}`.", dir_entry.path().to_str().unwrap())
     )
   )
 }
