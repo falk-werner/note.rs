@@ -15,9 +15,9 @@ class TauriNoteProvider extends NoteProvider {
     }
 
     async rename(old_name, new_name) {
-        return await tauri.invoke("read", { 
-            old_name: old_name,
-            new_name: new_name
+        return await tauri.invoke("rename", { 
+            oldName: old_name,
+            newName: new_name
          });
     }
 
