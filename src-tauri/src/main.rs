@@ -5,14 +5,14 @@ mod config;
 mod note;
 
 use config::{Config};
-use note::{Notebook};
+use note::{Note};
 
 fn main() {
   let config = Config::from_default_file();
-  let notebook = Notebook::new(config);
+  let note = Note::new(config);
 
   tauri::Builder::default()
-    .manage(notebook)
+    .manage(note)
     .invoke_handler(tauri::generate_handler![
       list
       ])
@@ -24,7 +24,7 @@ fn main() {
 /// 
 /// list all directories in the base directory that have a `README.md` file inside
 #[tauri::command]
-async fn list(notebook: tauri::State<'_, Notebook>) -> std::result::Result<Vec<String>, String> {
-  Ok(notebook.list_notes())
+async fn list(note: tauri::State<'_, Note>) -> std::result::Result<Vec<String>, String> {
+  Ok(note.list())
 }
 
