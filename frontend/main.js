@@ -4,7 +4,7 @@ import "lineicons/web-font/lineicons.css"
 import { slider_attach } from "./slider.js"
 import { init_titlebar } from "./titlebar.js"
 import { init_settings } from "./settings.js"
-import { FakeNoteProvider } from "./fakenoteprovider.js"
+import { TauriNoteProvider } from "./taurinoteprovider.js"
 import { NoteList } from "./notelist.js"
 import { Editor } from "./editor.js"
 import { TagList } from "./taglist.js"
@@ -30,7 +30,7 @@ document.querySelector("#toggle-mode").addEventListener("click", () => {
 });
 
 
-const noteProvider = new FakeNoteProvider();
+const noteProvider = new TauriNoteProvider();
 
 const taglist_elemnt = document.querySelector("#taglist");
 const taglist = new TagList(taglist_elemnt, noteProvider);
