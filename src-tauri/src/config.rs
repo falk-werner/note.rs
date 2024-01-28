@@ -3,7 +3,8 @@ use home::{home_dir};
 
 use std::fs;
 use std::path::{Path, PathBuf};
-use core::fmt::Display;
+
+use crate::noteerror::{NoteError,NoteResult};
 
 const DEFAULT_CONFIG_FILENAME: &str = ".noters.yaml";
 
@@ -30,23 +31,6 @@ struct ConfigValues {
 
 fn get_home_dir() -> PathBuf {
     home_dir().unwrap_or(PathBuf::from("."))
-}
-
-#[derive(Debug)]
-struct ConfigError {
-    message: String
-}
-
-impl ConfigError {
-    fn new(message: &str) -> Self {
-        ConfigError { message: message.into() }
-    }
-}
-
-impl<E: Display> From<E> for ConfigError {
-    fn from(value: E) -> Self {
-        ConfigError { message: value.to_string() }
-    }
 }
 
 impl Config {
@@ -83,7 +67,7 @@ impl Config {
         match Config::from_file(filename.as_path()) {
             Ok(config) => config,
             Err(error) => {
-                eprintln!("warning: failed to load config {:?}: {}", filename, error.message);
+                eprintln!("warning: failed to load config {:?}: {}", filename, error.to_string());
                 let config = Config::new(filename.as_path());
                 config.save();
                 config
@@ -92,12 +76,12 @@ impl Config {
     }
 
     /// Try to load the config from a given path.
-    fn from_file(filename: &Path) -> Result<Self, ConfigError> {
+    fn from_file(filename: &Path) -> NoteResult<Self> {
         let text = fs::read_to_string(filename)?;
         let config_file = serde_yaml::from_str::<ConfigFile>(&text)?;
         
         if config_file.meta.version != 1 {
-            return Err(ConfigError::new("unknown file format (version mismatch)"));
+            return Err(NoteError::new("unknown file format (version mismatch)"));
         }
 
         Ok(Config { 
