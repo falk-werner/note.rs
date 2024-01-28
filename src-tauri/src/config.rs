@@ -102,7 +102,7 @@ impl Config {
 
         Ok(Config { 
             filename: filename.into(),
-            config_file: config_file
+            config_file
         })
     }
 
@@ -122,7 +122,7 @@ impl Config {
     fn save(&self) {
         let text = serde_yaml::to_string(&self.config_file).unwrap();
         if let Err(error) = fs::write(self.filename.as_ref(), text.as_bytes()) {
-            eprintln!("error: failed to save config: {:?}: {}", self.filename, error.to_string());
+            eprintln!("error: failed to save config: {:?}: {}", self.filename, error);
         }
         else {
             eprintln!("info: saved config: {:?}", self.filename);
