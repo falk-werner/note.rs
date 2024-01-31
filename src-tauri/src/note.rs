@@ -28,19 +28,19 @@ impl Note {
 
     /// Reads the contents of the given note.
     pub fn read(&self, name : &str) -> NoteResult<String> {
-      let readme = Path::new(&self.get_note_path(name)).join("README.md");
+      let readme = Path::new(&self.get_note_path(name)?).join("README.md");
       Ok(fs::read_to_string(readme)?)
     }
 
     /// Creates a new note and return it's name.
     pub fn create(&self) -> NoteResult<String> {
       let mut name = String::from("Untitled");
-      let mut path = self.get_note_path(&name);
+      let mut path = self.get_note_path(&name)?;
       let mut n = 0;
       while path.as_path().exists() {
         n += 1;
         name = format!("Untitled {}", n);
-        path = self.get_note_path(&name);
+        path = self.get_note_path(&name)?;
       }
 
       fs::create_dir(path.clone())?;
@@ -54,27 +54,27 @@ impl Note {
 
     /// Renames a note.
     pub fn rename(&self, old_name: &str, new_name: &str) -> NoteResult<()> {
-      let old_path = self.get_note_path(old_name);
-      let new_path = self.get_note_path(new_name);
+      let old_path = self.get_note_path(old_name)?;
+      let new_path = self.get_note_path(new_name)?;
       Ok(fs::rename(old_path, new_path)?)
     }
 
     /// Writes the content of the given notes.
     pub fn write(&self, name: &str, content: &str) -> NoteResult<()> {
-      let readme = Path::new(&self.get_note_path(name)).join("README.md");
+      let readme = Path::new(&self.get_note_path(name)?).join("README.md");
       fs::write(readme, content.as_bytes())?;
       Ok(())
     }
 
     /// Removes the given note.
     pub fn remove(&self, name: &str) -> NoteResult<()> {
-      let path = self.get_note_path(name);
+      let path = self.get_note_path(name)?;
       Ok(fs::remove_dir_all(path)?)
     }
 
     /// Reads the tags associated with the given note.
     pub fn read_tags(&self, name: &str) -> NoteResult<Vec<String>> {
-      let tags = Path::new(&self.get_note_path(name)).join("tags.txt");
+      let tags = Path::new(&self.get_note_path(name)?).join("tags.txt");
       let content = fs::read_to_string(tags)?;
       let tags: Vec<String> = content
         .lines()
@@ -87,16 +87,25 @@ impl Note {
     /// Replaces the tags of tags of the given note.
     pub fn write_tags(&self, name: &str, tags: &Vec<String>) -> NoteResult<()> {
       let content = tags.join("\n");
-      let tags = Path::new(&self.get_note_path(name)).join("tags.txt");
+      let tags = Path::new(&self.get_note_path(name)?).join("tags.txt");
       fs::write(tags, content.as_bytes())?;
       Ok(())
     }
 
-    fn get_note_path(&self, name: &str) -> PathBuf {
+    fn get_note_path(&self, name: &str) -> NoteResult<PathBuf> {
+      check_name(name)?;
       let mut path = self.config.get_base_path();
       path.push(name);
-      path
+      Ok(path)
     }
+}
+
+/// Verifies, that a note name is valid
+fn check_name(name: &str) -> NoteResult<()> {
+  match name.chars().nth(0) {
+    None | Some('/') | Some('\\') => Err(NoteError::new("invalid note name")),
+    _ => Ok(()) 
+  }
 }
 
 /// list all directories in `base_path` that have a `README.md` file inside
