@@ -46,6 +46,7 @@ jobs:
         run: |
           npm install -g license-report
           license-report --only=prod --json > frontend/license/frontend.json
+          cargo install cargo-license
           cd src-tauri && cargo license -j --direct-deps-only --avoid-dev-deps --avoid-build-deps > ../frontend/license/backend.json
 
       - name: Build the app
