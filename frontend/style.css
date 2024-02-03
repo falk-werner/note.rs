@@ -211,6 +211,27 @@ dialog .controls {
   padding: 5px;
 }
 
+#info-license-switch:hover {
+  color: rgb(86, 126, 212);
+}
+
+#info table {
+  border-collapse: collapse;
+}
+
+#info table, #info th, #info td {
+  border: 1px solid black;
+}
+
+#info th {
+  background-color: black;
+  color: white;
+}
+
+#info tr:nth-child(2n) {
+  background-color: #e0e0e0;
+}
+
 #page-wrapper {
   overflow: scroll;
   display: flex;
