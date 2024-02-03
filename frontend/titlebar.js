@@ -5,6 +5,13 @@ const init_titlebar = function() {
     settings.addEventListener('click', () => {
         document.querySelector("#main").classList.add("hidden");
         document.querySelector("#settings").classList.remove("hidden");
+        document.querySelector("#info").classList.add("hidden");
+    });
+    const info = document.querySelector("#titlebar-info");
+    info.addEventListener('click', () => {
+        document.querySelector("#main").classList.add("hidden");
+        document.querySelector("#settings").classList.add("hidden");
+        document.querySelector("#info").classList.remove("hidden");
     });
 
     const minimize = document.querySelector('#titlebar-minimize');
@@ -21,6 +28,7 @@ const init_titlebar = function() {
         item.addEventListener('click', () => {
             document.querySelector("#main").classList.remove("hidden");
             document.querySelector("#settings").classList.add("hidden");    
+            document.querySelector("#info").classList.add("hidden");    
         });
     });
 
