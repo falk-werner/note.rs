@@ -2,6 +2,15 @@
   "name": "note.rs",
   "private": true,
   "version": "0.0.0",
+  "license": "MPL-2.0",
+  "author": {
+    "name": "Falk Werner",
+    "url": "https://github.com/falk-werner)"
+  },
+  "contributors": [{
+    "name": "fersaru",
+    "url": "https://github.com/fersaru"
+  }],
   "type": "module",
   "scripts": {
     "dev": "vite",
