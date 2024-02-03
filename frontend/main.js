@@ -4,6 +4,7 @@ import "lineicons/web-font/lineicons.css"
 import { slider_attach } from "./slider.js"
 import { init_titlebar } from "./titlebar.js"
 import { init_settings } from "./settings.js"
+import { init_info } from "./info.js"
 import { TauriNoteProvider } from "./taurinoteprovider.js"
 import { NoteList } from "./notelist.js"
 import { Editor } from "./editor.js"
@@ -11,6 +12,7 @@ import { TagList } from "./taglist.js"
 
 init_titlebar();
 init_settings();
+init_info();
 slider_attach(document.querySelector("#slider"));
 
 const editor = new Editor();
