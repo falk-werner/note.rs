@@ -36,23 +36,6 @@ How to setup __Ubuntu 20.04__ with tauri and vite:
 cargo tauri dev
 ```
 
-### Create license reports
-
-#### Update frontend licenses
-
-```bash
-npm install -g license report
-license-report --only=prod --json > frontend/license/frontend.json
-```
-
-#### Update backend licenses
-
-```bash
-cd src-tauri
-cargo license -j --direct-deps-only --avoid-dev-deps \
-  --avoid-build-deps > ../frontend/license/backend.json
-```
-
 ## References
 
 - [tauri](https://tauri.app/)
