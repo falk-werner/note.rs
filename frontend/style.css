@@ -221,6 +221,7 @@ dialog .controls {
 
 #info table, #info th, #info td {
   border: 1px solid black;
+  vertical-align: top;
 }
 
 #info th {
