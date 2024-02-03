@@ -41,6 +41,12 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm install
+      
+      - name: Update OSS Licenses
+        run: |
+          npm install -g license-report
+          license-report --only=prod --json > frontend/license/frontend.json
+          cd src-tauri && cargo license -j --direct-deps-only --avoid-dev-deps --avoid-build-deps > ../frontend/license/backend.json
 
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
