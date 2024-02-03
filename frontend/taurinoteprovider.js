@@ -41,7 +41,11 @@ class TauriNoteProvider extends NoteProvider {
             name: name,
             tags: tags
         });
-    }    
+    }
+
+    async open_note_directory(name) {
+        await tauri.invoke("open_note_directory", {name: name});
+    }
 }
 
 export { TauriNoteProvider }

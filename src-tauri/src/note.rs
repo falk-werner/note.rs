@@ -2,6 +2,9 @@ use std::{fs, fs::DirEntry, path::{Path, PathBuf}};
 use crate::config::{Config};
 use crate::noteerror::{NoteError, NoteResult};
 
+
+use opener;
+
 pub struct Note {
     config: Config
 }
@@ -97,6 +100,12 @@ impl Note {
       let mut path = self.config.get_base_path();
       path.push(name);
       Ok(path)
+    }
+
+    pub fn open_note_direcotry(&self, name: &str) -> NoteResult<()> {
+      let path = self.get_note_path(name)?;
+      opener::open(path.as_path())?;
+      Ok(())
     }
 }
 

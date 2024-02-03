@@ -94,6 +94,10 @@ class Note {
         this.#notelist.remove(this);
     }
 
+    async open_note_directory() {
+        await this.#provider.open_note_directory(this.#name);
+    }
+
     #filter_by_tags(tags) {
         if (tags.length == 0) {
             return true;
