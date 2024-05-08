@@ -52,6 +52,7 @@ body {
 .slider {
   background-color: darkgray;
   flex: 0 5px;
+  min-width: 5px;
   cursor: col-resize;
 }
 
