@@ -40,8 +40,14 @@ class Editor {
         document.querySelector("#editor-screenshot").addEventListener("click", () => {
             notImplementedDialog.showModal();
         });
-        document.querySelector("#editor-open-folder").addEventListener("click", () => {
-            notImplementedDialog.showModal();
+
+        document.querySelector("#editor-open-folder").addEventListener("click", async () => {
+            try {
+                await this.#active_note.open_note_directory();
+            }
+            catch (ex) {
+                notImplementedDialog.showModal();
+            }
         });
         
 

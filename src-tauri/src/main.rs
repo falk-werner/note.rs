@@ -23,7 +23,8 @@ fn main() {
       write,
       remove,
       read_tags,
-      write_tags
+      write_tags,
+      open_note_directory
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -70,4 +71,9 @@ async fn read_tags(note: tauri::State<'_, Note>, name: &str) -> NoteResult<Vec<S
 #[tauri::command]
 async fn write_tags(note: tauri::State<'_, Note>, name: &str, tags: Vec<String>) -> NoteResult<()> {
   note.write_tags(name, &tags)
+}
+
+#[tauri::command]
+async fn open_note_directory(note: tauri::State<'_, Note>, name: &str) -> NoteResult<()> {
+  note.open_note_direcotry(name)
 }
