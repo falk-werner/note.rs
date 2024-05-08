@@ -27,6 +27,7 @@
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
+      "publisher": "Falk Werner",
       "copyright": "",
       "deb": {
         "depends": []
@@ -40,7 +41,7 @@
         "icons/icon.ico"
       ],
       "identifier": "note.rs",
-      "longDescription": "",
+      "longDescription": "note taking app",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -54,7 +55,11 @@
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
-        "timestampUrl": ""
+        "timestampUrl": "",
+        "wix":
+          {
+            "license": "../LICENSE"
+          }
       }
     },
     "security": {
