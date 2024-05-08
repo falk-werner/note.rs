@@ -1,3 +1,7 @@
+[![Build](https://github.com/falk-werner/note.rs/actions/workflows/build.yaml/badge.svg)](https://github.com/falk-werner/note.rs/actions/workflows/build.yaml)
+[![Clippy](https://github.com/falk-werner/note.rs/actions/workflows/clippy.yaml/badge.svg)](https://github.com/falk-werner/note.rs/actions/workflows/clippy.yaml)
+[![Test](https://github.com/falk-werner/note.rs/actions/workflows/test.yaml/badge.svg)](https://github.com/falk-werner/note.rs/actions/workflows/test.yaml)
+
 # note.rs
 
 Yet another note taking tool.
