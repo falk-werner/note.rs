@@ -1,7 +1,7 @@
-use std::{fs, fs::DirEntry, path::{Path, PathBuf}};
+use std::{fs, fs::DirEntry, fs::File, path::{Path, PathBuf}, io::Read, process::Command};
 use crate::config::{Config};
 use crate::noteerror::{NoteError, NoteResult};
-
+use uuid::Uuid;
 
 use opener;
 
@@ -105,6 +105,28 @@ impl Note {
     pub fn open_note_direcotry(&self, name: &str) -> NoteResult<()> {
       let path = self.get_note_path(name)?;
       opener::open(path.as_path())?;
+      Ok(())
+    }
+
+    pub fn take_screenshot(&self, name: &str) -> NoteResult<String> {
+      let id = Uuid::new_v4();
+      let filename = format!("screenshot_{}.png", id);
+      let path = Path::new(&self.get_note_path(name)?).join(filename.clone());
+
+      let status = Command::new("gnome-screenshot")
+        .args(["-a", "-f", &path.to_string_lossy()])
+        .status()?;
+      
+      match status.code() {
+        Some(0) => Ok(filename),
+        _ => Err("failed to take screenshot".into())
+      }      
+    }
+
+    pub fn read_attachment(&self, name: &str, attachment: &str, data: &mut Vec<u8>) -> NoteResult<()> {
+      let path = Path::new(&self.get_note_path(name)?).join(attachment);
+      let mut file = File::open(path)?;
+      file.read_to_end(data)?;
       Ok(())
     }
 }

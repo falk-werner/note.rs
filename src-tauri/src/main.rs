@@ -4,10 +4,14 @@
 mod config;
 mod note;
 mod noteerror;
+mod localurl;
 
 use config::{Config};
 use note::{Note};
 use noteerror::{NoteResult};
+use localurl::{LocalUrl};
+use tauri::Manager;
+use tauri::http::ResponseBuilder;
 
 fn main() {
   let config = Config::from_default_file();
@@ -24,8 +28,27 @@ fn main() {
       remove,
       read_tags,
       write_tags,
-      open_note_directory
+      open_note_directory,
+      take_screenshot
       ])
+    .register_uri_scheme_protocol("local", move |app, request| {
+      let note = app.state::<note::Note>();
+      let Ok(url) = LocalUrl::parse(request.uri()) else {
+        return Err("invalid url".into());
+      };
+
+      let mut data: Vec<u8> = vec!();
+      if let Err(_) = note.read_attachment(&url.note, &url.filename, &mut data) {
+        return Err("Unknown attachment".into());
+      };
+
+      let response = ResponseBuilder::new()
+      .status(200)
+      .mimetype(&url.mime_type)
+      .body(data)
+      .unwrap();
+      Ok(response)
+      })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
@@ -76,4 +99,9 @@ async fn write_tags(note: tauri::State<'_, Note>, name: &str, tags: Vec<String>)
 #[tauri::command]
 async fn open_note_directory(note: tauri::State<'_, Note>, name: &str) -> NoteResult<()> {
   note.open_note_direcotry(name)
+}
+
+#[tauri::command]
+async fn take_screenshot(note: tauri::State<'_, Note>, name: &str) -> NoteResult<String> {
+  note.take_screenshot(name)
 }

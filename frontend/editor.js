@@ -6,6 +6,7 @@ import { marked } from "marked"
 
 import { RemoveDialog } from "./removedialog.js"
 import { NotImplementedDialog } from "./notimplementeddialog.js"
+import { MdRenderer } from "./mdrenderer.js"
 
 class Editor {
 
@@ -37,8 +38,14 @@ class Editor {
         });
 
         const notImplementedDialog = new NotImplementedDialog();
-        document.querySelector("#editor-screenshot").addEventListener("click", () => {
-            notImplementedDialog.showModal();
+        document.querySelector("#editor-screenshot").addEventListener("click", async () => {
+            try {
+                const filename = await this.#active_note.take_screenshot();
+                this.#editor.dispatch(this.#editor.state.replaceSelection(`![screenshot](${filename})\n`));
+            }
+            catch (ex) {
+                notImplementedDialog.showModal();
+            }
         });
 
         document.querySelector("#editor-open-folder").addEventListener("click", async () => {
@@ -83,10 +90,12 @@ class Editor {
                 this.#view.classList.remove("hidden");
                 this.#content_element.classList.add("hidden");
 
+                const renderer = new MdRenderer(this.#active_note);
                 const content = this.#editor.state.doc.toString();
                 const html = marked.parse(content, {
                     pedantic: false,
-                    gfm: true
+                    gfm: true,
+                    renderer: renderer
                 });
                 this.#view.innerHTML = html;        
                 break;
@@ -124,9 +133,11 @@ class Editor {
             insert: content
         }]});
 
+        const renderer = new MdRenderer(this.#active_note);
         const html = marked.parse(content, {
             pedantic: false,
-            gfm: true
+            gfm: true,
+            renderer: renderer
         });
         this.#view.innerHTML = html;
     }

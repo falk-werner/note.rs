@@ -46,6 +46,10 @@ class TauriNoteProvider extends NoteProvider {
     async open_note_directory(name) {
         await tauri.invoke("open_note_directory", {name: name});
     }
+
+    async take_screenshot(name) {
+        return await tauri.invoke("take_screenshot", {name: name});
+    }    
 }
 
 export { TauriNoteProvider }
