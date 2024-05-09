@@ -5,7 +5,7 @@ import { markdown } from "@codemirror/lang-markdown"
 import { marked } from "marked"
 
 import { RemoveDialog } from "./removedialog.js"
-import { NotImplementedDialog } from "./notimplementeddialog.js"
+import { ErrorDialog } from "./errordialog.js"
 import { MdRenderer } from "./mdrenderer.js"
 
 class Editor {
@@ -37,14 +37,14 @@ class Editor {
             this.#remove_dialog.show_modal(this.#active_note); 
         });
 
-        const notImplementedDialog = new NotImplementedDialog();
+        const errorDialog = new ErrorDialog();
         document.querySelector("#editor-screenshot").addEventListener("click", async () => {
             try {
                 const filename = await this.#active_note.take_screenshot();
                 this.#editor.dispatch(this.#editor.state.replaceSelection(`![screenshot](${filename})\n`));
             }
             catch (ex) {
-                notImplementedDialog.showModal();
+                errorDialog.showModal("Failed to take screenshot. Check if gnome-screenshot is installed.");
             }
         });
 
@@ -53,7 +53,7 @@ class Editor {
                 await this.#active_note.open_note_directory();
             }
             catch (ex) {
-                notImplementedDialog.showModal();
+                errorDialog.showModal("Failed to open folder");
             }
         });
         
