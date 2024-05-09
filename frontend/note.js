@@ -98,6 +98,10 @@ class Note {
         await this.#provider.open_note_directory(this.#name);
     }
 
+    async take_screenshot() {
+        return await this.#provider.take_screenshot(this.#name);
+    }
+
     #filter_by_tags(tags) {
         if (tags.length == 0) {
             return true;
