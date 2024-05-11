@@ -5,130 +5,117 @@ use uuid::Uuid;
 
 use opener;
 
-pub struct Note {
-    config: Config
+/// Lists the names of the notes.
+/// 
+/// list all directories in the base directory that have a `README.md` file inside
+pub fn list(config: &Config) -> Result<Vec<String>, NoteError> {
+    let base_path = config.get_base_path();
+    match get_note_names(base_path) {
+      Ok(note_names) => return Ok(note_names),
+      Err(e) => error_handling(e.to_string())
+    }
+    Ok(Vec::<String>::new())
 }
 
-impl Note {
+/// Reads the contents of the given note.
+pub fn read(config: &Config, name : &str) -> NoteResult<String> {
+  let readme = Path::new(&get_note_path(&config, name)?).join("README.md");
+  Ok(fs::read_to_string(readme)?)
+}
 
-    /// Creates a new Note struct.
-    pub fn new(config: Config) -> Self {
-        Note { config }
-    }
+/// Creates a new note and return it's name.
+pub fn create(config: &Config) -> NoteResult<String> {
+  let mut name = String::from("Untitled");
+  let mut path = get_note_path(&config, &name)?;
+  let mut n = 0;
+  while path.as_path().exists() {
+    n += 1;
+    name = format!("Untitled {}", n);
+    path = get_note_path(&config, &name)?;
+  }
 
+  fs::create_dir(path.clone())?;
+  let readme = Path::new(&path).join("README.md");
+  fs::write(readme, format!("# {}\n", name))?;
+  let tags = Path::new(&path).join("tags.txt");
+  fs::write(tags, "")?;
 
-    /// Lists the names of the notes.
-    /// 
-    /// list all directories in the base directory that have a `README.md` file inside
-    pub fn list(&self) -> Result<Vec<String>, NoteError> {
-        let base_path = self.config.get_base_path();
-        match get_note_names(base_path) {
-          Ok(note_names) => return Ok(note_names),
-          Err(e) => error_handling(e.to_string())
-        }
-        Ok(Vec::<String>::new())
-    }
+  Ok(name)
+}
 
-    /// Reads the contents of the given note.
-    pub fn read(&self, name : &str) -> NoteResult<String> {
-      let readme = Path::new(&self.get_note_path(name)?).join("README.md");
-      Ok(fs::read_to_string(readme)?)
-    }
+/// Renames a note.
+pub fn rename(config: &Config, old_name: &str, new_name: &str) -> NoteResult<()> {
+  let old_path = get_note_path(&config, old_name)?;
+  let new_path = get_note_path(&config, new_name)?;
+  Ok(fs::rename(old_path, new_path)?)
+}
 
-    /// Creates a new note and return it's name.
-    pub fn create(&self) -> NoteResult<String> {
-      let mut name = String::from("Untitled");
-      let mut path = self.get_note_path(&name)?;
-      let mut n = 0;
-      while path.as_path().exists() {
-        n += 1;
-        name = format!("Untitled {}", n);
-        path = self.get_note_path(&name)?;
-      }
+/// Writes the content of the given notes.
+pub fn write(config: &Config, name: &str, content: &str) -> NoteResult<()> {
+  let readme = Path::new(&get_note_path(&config, name)?).join("README.md");
+  fs::write(readme, content.as_bytes())?;
+  Ok(())
+}
 
-      fs::create_dir(path.clone())?;
-      let readme = Path::new(&path).join("README.md");
-      fs::write(readme, format!("# {}\n", name))?;
-      let tags = Path::new(&path).join("tags.txt");
-      fs::write(tags, "")?;
+/// Removes the given note.
+pub fn remove(config: &Config, name: &str) -> NoteResult<()> {
+  let path = get_note_path(&config, name)?;
+  Ok(fs::remove_dir_all(path)?)
+}
 
-      Ok(name)
-    }
+/// Reads the tags associated with the given note.
+pub fn read_tags(config: &Config, name: &str) -> NoteResult<Vec<String>> {
+  let tags = Path::new(&get_note_path(&config, name)?).join("tags.txt");
+  let content = fs::read_to_string(tags)?;
+  let tags: Vec<String> = content
+    .lines()
+    .filter(|s| !s.is_empty())
+    .map(String::from)
+    .collect();
+  Ok (tags)
+}
 
-    /// Renames a note.
-    pub fn rename(&self, old_name: &str, new_name: &str) -> NoteResult<()> {
-      let old_path = self.get_note_path(old_name)?;
-      let new_path = self.get_note_path(new_name)?;
-      Ok(fs::rename(old_path, new_path)?)
-    }
+/// Replaces the tags of tags of the given note.
+pub fn write_tags(config: &Config, name: &str, tags: &Vec<String>) -> NoteResult<()> {
+  let content = tags.join("\n");
+  let tags = Path::new(&get_note_path(&config, name)?).join("tags.txt");
+  fs::write(tags, content.as_bytes())?;
+  Ok(())
+}
 
-    /// Writes the content of the given notes.
-    pub fn write(&self, name: &str, content: &str) -> NoteResult<()> {
-      let readme = Path::new(&self.get_note_path(name)?).join("README.md");
-      fs::write(readme, content.as_bytes())?;
-      Ok(())
-    }
+pub fn take_screenshot(config: &Config, name: &str) -> NoteResult<String> {
+  let id = Uuid::new_v4();
+  let filename = format!("screenshot_{}.png", id);
+  let path = Path::new(&get_note_path(&config, name)?).join(filename.clone());
 
-    /// Removes the given note.
-    pub fn remove(&self, name: &str) -> NoteResult<()> {
-      let path = self.get_note_path(name)?;
-      Ok(fs::remove_dir_all(path)?)
-    }
+  let status = Command::new("gnome-screenshot")
+    .args(["-a", "-f", &path.to_string_lossy()])
+    .status()?;
+  
+  match status.code() {
+    Some(0) => Ok(filename),
+    _ => Err("failed to take screenshot".into())
+  }      
+}
 
-    /// Reads the tags associated with the given note.
-    pub fn read_tags(&self, name: &str) -> NoteResult<Vec<String>> {
-      let tags = Path::new(&self.get_note_path(name)?).join("tags.txt");
-      let content = fs::read_to_string(tags)?;
-      let tags: Vec<String> = content
-        .lines()
-        .filter(|s| !s.is_empty())
-        .map(String::from)
-        .collect();
-      Ok (tags)
-    }
+pub fn read_attachment(config: &Config, name: &str, attachment: &str, data: &mut Vec<u8>) -> NoteResult<()> {
+  let path = Path::new(&get_note_path(&config, name)?).join(attachment);
+  let mut file = File::open(path)?;
+  file.read_to_end(data)?;
+  Ok(())
+}
 
-    /// Replaces the tags of tags of the given note.
-    pub fn write_tags(&self, name: &str, tags: &Vec<String>) -> NoteResult<()> {
-      let content = tags.join("\n");
-      let tags = Path::new(&self.get_note_path(name)?).join("tags.txt");
-      fs::write(tags, content.as_bytes())?;
-      Ok(())
-    }
+pub fn open_note_direcotry(config: &Config, name: &str) -> NoteResult<()> {
+  let path = get_note_path(&config, name)?;
+  opener::open(path.as_path())?;
+  Ok(())
+}
 
-    fn get_note_path(&self, name: &str) -> NoteResult<PathBuf> {
-      check_name(name)?;
-      let mut path = self.config.get_base_path();
-      path.push(name);
-      Ok(path)
-    }
-
-    pub fn open_note_direcotry(&self, name: &str) -> NoteResult<()> {
-      let path = self.get_note_path(name)?;
-      opener::open(path.as_path())?;
-      Ok(())
-    }
-
-    pub fn take_screenshot(&self, name: &str) -> NoteResult<String> {
-      let id = Uuid::new_v4();
-      let filename = format!("screenshot_{}.png", id);
-      let path = Path::new(&self.get_note_path(name)?).join(filename.clone());
-
-      let status = Command::new("gnome-screenshot")
-        .args(["-a", "-f", &path.to_string_lossy()])
-        .status()?;
-      
-      match status.code() {
-        Some(0) => Ok(filename),
-        _ => Err("failed to take screenshot".into())
-      }      
-    }
-
-    pub fn read_attachment(&self, name: &str, attachment: &str, data: &mut Vec<u8>) -> NoteResult<()> {
-      let path = Path::new(&self.get_note_path(name)?).join(attachment);
-      let mut file = File::open(path)?;
-      file.read_to_end(data)?;
-      Ok(())
-    }
+fn get_note_path(config: &Config, name: &str) -> NoteResult<PathBuf> {
+  check_name(name)?;
+  let mut path = config.get_base_path();
+  path.push(name);
+  Ok(path)
 }
 
 /// Verifies, that a note name is valid
