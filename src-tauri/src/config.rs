@@ -29,6 +29,14 @@ struct ConfigValues {
     base_dir: String
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ConfigValue {
+    pub name: String,
+    pub data_type: String,
+    pub value: String
+}
+
+
 fn get_home_dir() -> PathBuf {
     home_dir().unwrap_or(PathBuf::from("."))
 }
@@ -96,6 +104,20 @@ impl Config {
         let base_dir = &self.config_file.values.base_dir;
 
         PathBuf::from(base_dir.replace("{home}", &home_dir.to_string_lossy()))
+    }
+
+    pub fn read_all(&self) -> Vec<ConfigValue> {
+        vec!(
+            ConfigValue {
+                name: String::from("base_path"),
+                data_type: String::from("string"),
+                value: String::from(&self.config_file.values.base_dir)
+            }
+        )
+    }
+
+    pub fn write(&mut self, _name: &str, _value: &str) {
+        self.save();
     }
 
     /// Tries to save the configuration.
