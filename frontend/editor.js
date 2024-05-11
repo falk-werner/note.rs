@@ -63,6 +63,7 @@ class Editor {
         this.#editor = new EditorView({
             extensions: [
                 basicSetup,
+                EditorView.lineWrapping,
                 language.of(markdown())
             ],
             doc: "",
