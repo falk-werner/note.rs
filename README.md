@@ -6,6 +6,32 @@
 
 Yet another note taking tool.
 
+![note.rs](doc/edit_mode.png)
+
+## Features
+
+- *View mode* to view existing notes
+- *Edit mode* to edit new or existing notes
+- create notes using markdown
+- filter existing notes
+  - full text search
+  - filter by tags
+- insert screenshots
+- storage format conforming to [note.spec v1](https://github.com/falk-werner/note.spec/tree/v1)
+
+## Accelerators
+
+| Key Binding | Description |
+| ----------- | ----------- |
+| Ctrl + n    | Create a new note. |
+| Ctrl + d    | Delete the selected note. |
+| Ctrl + s    | Sync changes *(note that changes are also saved automatically)*. |
+| Ctrl + b    | Browse attachments of the selected note. |
+| Ctrl + p    | Take screenshot. |
+| Ctrl + q    | Save and exit *(note that Alt + F4 will exit **without** saving)*. |
+| Ctrl + e    | Toggle between view mode and edit mode. |
+| Ctrl + f    | Set focus of search *(note that Ctrl + f will open find menu while editing)*. |
+
 ## Build and run
 This project is build with [rust](https://www.rust-lang.org/) and [npm](https://www.npmjs.com/).
 Please see to have it installed beforehand.
@@ -39,19 +65,6 @@ How to setup __Ubuntu 20.04__ with tauri and vite:
 ```bash
 cargo tauri dev
 ```
-
-## Accelerators
-
-| Key Binding | Description |
-| ----------- | ----------- |
-| Ctrl + n    | Create a new note. |
-| Ctrl + d    | Delete the selected note. |
-| Ctrl + s    | Sync changes *(note that changes are also saved automatically)*. |
-| Ctrl + b    | Browse attachments of the selected note. |
-| Ctrl + p    | Take screenshot. |
-| Ctrl + q    | Save and exit *(note that Alt + F4 will exit **without** saving)*. |
-| Ctrl + e    | Toggle between view mode and edit mode. |
-| Ctrl + f    | Set focus of search *(note that Ctrl + f will open find menu while editing)*. |
 
 ## References
 
