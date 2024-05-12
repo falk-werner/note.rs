@@ -1,6 +1,6 @@
 import { appWindow } from '@tauri-apps/api/window'
 
-const init_titlebar = function() {
+const init_titlebar = function(onclose) {
     const settings = document.querySelector("#titlebar-settings");
     settings.addEventListener('click', () => {
         document.querySelector("#main").classList.add("hidden");
@@ -21,7 +21,15 @@ const init_titlebar = function() {
     maximize.addEventListener('click', () => appWindow.toggleMaximize());
 
     const close = document.querySelector('#titlebar-close');
-    close.addEventListener('click', () => appWindow.close());
+    close.addEventListener('click', async () => {
+        try {
+            await onclose();
+        }
+        catch (ex) {
+            console.error("onclose handler failed", ex);
+        }
+        appWindow.close();
+    });
 
     const nav_main = document.querySelectorAll(".nav-main");
     nav_main.forEach((item) => {
