@@ -40,6 +40,19 @@ How to setup __Ubuntu 20.04__ with tauri and vite:
 cargo tauri dev
 ```
 
+## Accelerators
+
+| Key Binding | Description |
+| ----------- | ----------- |
+| Ctrl + n    | Create a new note. |
+| Ctrl + d    | Delete the selected note. |
+| Ctrl + s    | Sync changes *(note that changes are also saved automatically)*. |
+| Ctrl + b    | Browse attachments of the selected note. |
+| Ctrl + p    | Take screenshot. |
+| Ctrl + q    | Save and exit *(note that Alt + F4 will exit **without** saving)*. |
+| Ctrl + e    | Toggle between view mode and edit mode. |
+| Ctrl + f    | Set focus of search *(note that Ctrl + f will open find menu while editing)*. |
+
 ## References
 
 - [tauri](https://tauri.app/)
