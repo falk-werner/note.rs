@@ -27,7 +27,10 @@ class NoteList {
         this.#element.innerHTML = "";
         this.#notes = new Map();
 
-        const notes = await this.#provider.list();
+        const notes = (await this.#provider.list()).sort((a, b) => {
+            return a.toLowerCase().localeCompare(b.toLowerCase());
+        });
+        
         for (const name of notes) {
             try {
                 await this.#add(name);
