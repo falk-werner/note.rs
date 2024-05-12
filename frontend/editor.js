@@ -33,28 +33,17 @@ class Editor {
         });
 
         this.#remove_dialog = new RemoveDialog(document.querySelector("#remove-dialog"));
-        document.querySelector("#editor-remove").addEventListener("click", () => { 
-            this.#remove_dialog.show_modal(this.#active_note); 
+        document.querySelector("#editor-remove").addEventListener("click", () => {
+            this.removeNote();
         });
 
         const errorDialog = new ErrorDialog();
         document.querySelector("#editor-screenshot").addEventListener("click", async () => {
-            try {
-                const filename = await this.#active_note.take_screenshot();
-                this.#editor.dispatch(this.#editor.state.replaceSelection(`![screenshot](${filename})\n`));
-            }
-            catch (ex) {
-                errorDialog.showModal("Failed to take screenshot. Check if gnome-screenshot is installed.");
-            }
+            this.takeScreenshot();
         });
 
         document.querySelector("#editor-open-folder").addEventListener("click", async () => {
-            try {
-                await this.#active_note.open_note_directory();
-            }
-            catch (ex) {
-                errorDialog.showModal("Failed to open folder");
-            }
+            this.openNoteDirectory();
         });
         
 
@@ -148,6 +137,29 @@ class Editor {
         this.#tags.value = "";
         this.#set_content("");
         this.#active_note = null;
+    }
+
+    async takeScreenshot() {
+        try {
+            const filename = await this.#active_note.take_screenshot();
+            this.#editor.dispatch(this.#editor.state.replaceSelection(`![screenshot](${filename})\n`));
+        }
+        catch (ex) {
+            errorDialog.showModal("Failed to take screenshot. Check if gnome-screenshot is installed.");
+        }
+    }
+
+    async openNoteDirectory() {
+        try {
+            await this.#active_note.open_note_directory();
+        }
+        catch (ex) {
+            errorDialog.showModal("Failed to open folder");
+        }
+    }
+
+    removeNote() {
+        this.#remove_dialog.show_modal(this.#active_note); 
     }
 }
 

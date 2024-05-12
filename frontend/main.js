@@ -10,6 +10,7 @@ import { NoteList } from "./notelist.js"
 import { Editor } from "./editor.js"
 import { TagList } from "./taglist.js"
 import { TauriSettingsProvider } from "./taurisettingsprovider.js"
+import { init_accelerators } from "./accelerators.js"
 
 init_info();
 slider_attach(document.querySelector("#slider"));
@@ -53,7 +54,5 @@ init_settings(new TauriSettingsProvider(), () => {
   taglist.update();
 });
 
-
-
-
+init_accelerators(editor);
 
