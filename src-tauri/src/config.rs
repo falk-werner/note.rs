@@ -31,9 +31,21 @@ struct ConfigValues {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ConfigValue {
+    pub id: String,
     pub name: String,
     pub data_type: String,
     pub value: String
+}
+
+impl ConfigValue {
+    fn new(id: &str, name: &str, data_type: &str, value: &str) -> Self {
+        ConfigValue {
+            id: String::from(id),
+            name: String::from(name),
+            data_type: String::from(data_type),
+            value: String::from(value),
+        }
+    }
 }
 
 
@@ -108,11 +120,9 @@ impl Config {
 
     pub fn read_all(&self) -> Vec<ConfigValue> {
         vec!(
-            ConfigValue {
-                name: String::from("base_path"),
-                data_type: String::from("string"),
-                value: String::from(&self.config_file.values.base_dir)
-            }
+            ConfigValue::new("notes.path", "Notes Directory","string", &self.config_file.values.base_dir),
+            ConfigValue::new("screenshot.command", "Screenshot Command","string", "gnome-screenshot -a {filename}"),
+            ConfigValue::new("view.titlebar.color", "Titlebar Color","color", "#b0b0b0"),
         )
     }
 

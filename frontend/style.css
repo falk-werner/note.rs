@@ -205,7 +205,7 @@ dialog .controls {
   background-color: #e0e0e0;
 }
 
-#info {
+#info, #settings {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -241,4 +241,19 @@ dialog .controls {
   align-self: stretch;
   height: 100%;
   border: 1px solid #e0e0e0;
+}
+
+#settings_items > div {
+  margin-bottom: 1em;
+}
+
+#settings_items span {
+  display: block;
+}
+
+#settings_items input {
+  display: block;
+  width: 100%;
+  min-width:200px;
+  margin-left: 1em;
 }

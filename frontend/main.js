@@ -9,9 +9,10 @@ import { TauriNoteProvider } from "./taurinoteprovider.js"
 import { NoteList } from "./notelist.js"
 import { Editor } from "./editor.js"
 import { TagList } from "./taglist.js"
+import { TauriSettingsProvider } from "./taurisettingsprovider.js"
 
 init_titlebar();
-init_settings();
+init_settings(new TauriSettingsProvider());
 init_info();
 slider_attach(document.querySelector("#slider"));
 
