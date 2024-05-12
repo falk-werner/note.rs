@@ -112,7 +112,7 @@ async fn write_tags(context: tauri::State<'_, Context>, name: &str, tags: Vec<St
 #[tauri::command]
 async fn open_note_directory(context: tauri::State<'_, Context>, name: &str) -> NoteResult<()> {
   let config = context.0.lock().unwrap();
-  note::open_note_direcotry(&config, name)
+  note::open_note_directory(&config, name)
 }
 
 #[tauri::command]
