@@ -18,17 +18,6 @@ const get_rule = (name) => {
 
 }
 
-function handleKnownSetting(id, value) {
-    console.log("handle known", id);
-    switch (id) {
-        case "view.titlebar.color":
-            setColor(".titlebar", value);
-            break;
-        default:
-            break;
-    }
-}
-
 function setColor(ruleName, color) {
     const rule = get_rule(ruleName);
     rule.style.background=color;
@@ -38,9 +27,11 @@ function setColor(ruleName, color) {
 class SettingsPage
 {
     #provider;
+    #oninit;
 
-    constructor(provider) {
+    constructor(provider, oninit) {
         this.#provider = provider;
+        this.#oninit = oninit;
         this.init();
     }
 
@@ -49,18 +40,18 @@ class SettingsPage
 
         const settings = await this.#provider.readAll();
         for(const setting of settings) {
-            this.addSetting(element, setting);
-            handleKnownSetting(setting.id, setting.value);
+            this.#addSetting(element, setting);
+            this.#handleKnownSetting(setting.id, setting.value);
         }
     }
 
-    addSetting(element, setting) {
+    #addSetting(element, setting) {
         switch (setting.data_type) {
             case "string":
-                this.addStringSetting(element, setting);
+                this.#addStringSetting(element, setting);
                 break;
             case "color":
-                this.addColorSetting(element, setting);
+                this.#addColorSetting(element, setting);
                 break;
             default:
                 console.warn("setting: unknown data_type: ", setting);
@@ -68,7 +59,7 @@ class SettingsPage
         }
     }
 
-    addGenericSetting(element, setting, inputType) {
+    #addGenericSetting(element, setting, inputType) {
         const div = document.createElement("div");
         element.appendChild(div);
 
@@ -82,41 +73,45 @@ class SettingsPage
         input.value = setting.value;
 
         input.addEventListener("change", () => {
-            console.log("change");
-            this.write(setting.id, input.value);
+            this.#write(setting.id, input.value);
         });
     }
 
-    addStringSetting(element, setting) {
-        this.addGenericSetting(element, setting, "text");
+    #addStringSetting(element, setting) {
+        this.#addGenericSetting(element, setting, "text");
     }
 
-    addColorSetting(element, setting) {
-        this.addGenericSetting(element, setting, "color");
+    #addColorSetting(element, setting) {
+        this.#addGenericSetting(element, setting, "color");
     }
 
-    async write(id, value) {
-        console.log("write", id, value);
+    async #write(id, value) {
         try {
             await this.#provider.write(id, value);
-            handleKnownSetting(id, value);
+            this.#handleKnownSetting(id, value);
         }
         catch (ex) {
             console.error("failed to write setting", id, ex);
         }
     }
+
+    #handleKnownSetting(id, value) {
+        switch (id) {
+            case "view.titlebar.color":
+                setColor(".titlebar", value);
+                break;
+            case "notes.path":
+                this.#oninit();
+                break;
+            default:
+                break;
+        }
+    }
+    
 }
 
-const init_settings = (provider) => {
-    /*
-    const titlebar = document.querySelector("#settings_titlebar");
-    titlebar.addEventListener("input", () => {
-        const rule = get_rule(".titlebar");
-        rule.style.background=titlebar.value;
-    });
-    */
-
-    new SettingsPage(provider);
+function init_settings(provider, notelist, taglist) {
+    new SettingsPage(provider, notelist, taglist);
 };
 
 export { init_settings }
