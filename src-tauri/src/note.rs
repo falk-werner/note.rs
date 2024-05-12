@@ -88,8 +88,10 @@ pub fn take_screenshot(config: &Config, name: &str) -> NoteResult<String> {
   let filename = format!("screenshot_{}.png", id);
   let path = Path::new(&get_note_path(&config, name)?).join(filename.clone());
 
-  let status = Command::new("gnome-screenshot")
-    .args(["-a", "-f", &path.to_string_lossy()])
+  let (cmd, args) = config.get_screenshot_command(&path.to_string_lossy());
+
+  let status = Command::new(cmd)
+    .args(args)
     .status()?;
   
   match status.code() {

@@ -45,7 +45,7 @@ pub struct ConfigValue {
 }
 
 fn default_screenshot_command() -> String {
-    String::from("gnome-screenshot -a {filename}")
+    String::from("gnome-screenshot -a -f {filename}")
 }
 
 fn default_titlebar_color() -> String {
@@ -133,6 +133,23 @@ impl Config {
         let base_dir = &self.config_file.values.base_dir;
 
         PathBuf::from(base_dir.replace("{home}", &home_dir.to_string_lossy()))
+    }
+
+    pub fn get_screenshot_command(&self, filename: &str) -> (String, Vec<String>) {
+        let mut parts = self.config_file.values.screenshot_command.split(" ");
+        let first = parts.next();
+        if first.is_none() {
+            return (String::from("false"), vec!());
+        }
+
+        let command = String::from(first.unwrap());
+
+        let mut args: Vec<String> = vec!();
+        for part in parts {
+            args.push(String::from(if part != "{filename}" { part } else { filename }));
+        }
+
+        (command, args)
     }
 
     pub fn read_all(&self) -> Vec<ConfigValue> {
