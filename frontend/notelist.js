@@ -20,26 +20,41 @@ class NoteList {
 
         this.#filter.addEventListener('input', () => this.apply_filter());
         this.#taglist.change_handler = () => { this.apply_filter() };
-        this.#update();
     }
 
-    async #update() {
+    async update() {
+        this.#active_note = null;
         this.#element.innerHTML = "";
         this.#notes = new Map();
 
         const notes = await this.#provider.list();
         for (const name of notes) {
-            await this.#add(name);
+            try {
+                await this.#add(name);
+            }
+            catch (ex) {
+                console.warn("failed to load note", name, ex);
+            }
         }
     }
 
     async #add(name, activate) {
         const content = await this.#provider.read(name);
-        const tags = await this.#provider.read_tags(name);
+        const tags = await this.#read_tags(name);
         const note = new Note(name, content, tags, this.#provider, this, this.#taglist, this.#editor);
         this.#notes.set(name, note);
         if ((!this.#active_note) || (activate)) {
             this.activate(note);
+        }
+    }
+
+    async #read_tags(name) {
+        try {
+            return await this.#provider.read_tags(name);
+        }
+        catch (ex) {
+            console.warn("failed to read tags", name, ex);
+            return [];
         }
     }
 

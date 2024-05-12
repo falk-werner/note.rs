@@ -11,8 +11,6 @@ class TagList {
         this.#provider = provider;        
         this.#tags = new Map();
         this.#change_handler = null;
-
-        this.update();
     }
 
     get active_tags() {
@@ -33,13 +31,18 @@ class TagList {
        const new_tags = new Map();
         const notes = await this.#provider.list();
         for(const note of notes) {
-            const tags = await this.#provider.read_tags(note);
-            for(let tag of tags) {
-                tag = tag.toLowerCase();
-                if (!new_tags.has(tag)) {
-                    const active = this.#tags.has(tag) ? this.#tags.get(tag) : false;
-                    new_tags.set(tag, active);
+            try {
+                const tags = await this.#provider.read_tags(note);
+                for(let tag of tags) {
+                    tag = tag.toLowerCase();
+                    if (!new_tags.has(tag)) {
+                        const active = this.#tags.has(tag) ? this.#tags.get(tag) : false;
+                        new_tags.set(tag, active);
+                    }
                 }
+            }
+            catch (ex) {
+                console.warn("failed to get tags", note, ex);
             }
         }
         this.#tags = new_tags;
