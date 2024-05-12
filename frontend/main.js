@@ -11,7 +11,6 @@ import { Editor } from "./editor.js"
 import { TagList } from "./taglist.js"
 import { TauriSettingsProvider } from "./taurisettingsprovider.js"
 
-init_titlebar();
 init_info();
 slider_attach(document.querySelector("#slider"));
 
@@ -43,6 +42,10 @@ const notelist = new NoteList(noteProvider, notelist_element, filter_element, ta
 document.querySelector("#add-note").addEventListener("click", async () => {
   notelist.add_new();
 })
+
+init_titlebar(async () => {
+  await editor.save();
+});
 
 init_settings(new TauriSettingsProvider(), () => {
   editor.remove();

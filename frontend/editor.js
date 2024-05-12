@@ -29,7 +29,7 @@ class Editor {
         this.#mode_change_handler = () => {};
 
         document.querySelector("#editor-save").addEventListener("click", () => {
-            this.#save();
+            this.save();
         });
 
         this.#remove_dialog = new RemoveDialog(document.querySelector("#remove-dialog"));
@@ -110,7 +110,7 @@ class Editor {
     }
 
     async set_note(note) {
-        await this.#save();
+        await this.save();
         this.#active_note = note;
         this.#title.value = note.name;
         this.#tags.value = note.tags.join(" ");
@@ -118,7 +118,7 @@ class Editor {
         this.#set_content(note.content);
     }
 
-    async #save() {
+    async save() {
         if (this.#active_note) {
             await this.#active_note.save(
                 this.#title.value,
