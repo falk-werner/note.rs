@@ -105,7 +105,7 @@ pub fn read_attachment(config: &Config, name: &str, attachment: &str, data: &mut
   Ok(())
 }
 
-pub fn open_note_direcotry(config: &Config, name: &str) -> NoteResult<()> {
+pub fn open_note_directory(config: &Config, name: &str) -> NoteResult<()> {
   let path = get_note_path(&config, name)?;
   opener::open(path.as_path())?;
   Ok(())
