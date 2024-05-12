@@ -26,7 +26,14 @@ struct MetaInfo {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ConfigValues {
-    base_dir: String
+    base_dir: String,
+
+    #[serde(default = "default_screenshot_command")]
+    screenshot_command: String,
+
+    #[serde(default = "default_titlebar_color")]
+    titlebar_color: String,
+
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,6 +42,14 @@ pub struct ConfigValue {
     pub name: String,
     pub data_type: String,
     pub value: String
+}
+
+fn default_screenshot_command() -> String {
+    String::from("gnome-screenshot -a {filename}")
+}
+
+fn default_titlebar_color() -> String {
+    String::from("#b0b0b0")   
 }
 
 impl ConfigValue {
@@ -68,7 +83,9 @@ impl Config {
                     },
                     values: { 
                         ConfigValues {
-                            base_dir: String::from("{home}/.notes")
+                            base_dir: String::from("{home}/.notes"),
+                            screenshot_command: default_screenshot_command(),
+                            titlebar_color: default_titlebar_color(),
                         }
                     }
                 }
@@ -121,12 +138,19 @@ impl Config {
     pub fn read_all(&self) -> Vec<ConfigValue> {
         vec!(
             ConfigValue::new("notes.path", "Notes Directory","string", &self.config_file.values.base_dir),
-            ConfigValue::new("screenshot.command", "Screenshot Command","string", "gnome-screenshot -a {filename}"),
-            ConfigValue::new("view.titlebar.color", "Titlebar Color","color", "#b0b0b0"),
+            ConfigValue::new("screenshot.command", "Screenshot Command","string", &self.config_file.values.screenshot_command),
+            ConfigValue::new("view.titlebar.color", "Titlebar Color","color", &self.config_file.values.titlebar_color),
         )
     }
 
-    pub fn write(&mut self, _name: &str, _value: &str) {
+    pub fn write(&mut self, id: &str, value: &str) {
+        match id {
+            "notes.path" => { self.config_file.values.base_dir = String::from(value);},
+            "screenshot.command" => { self.config_file.values.screenshot_command = String::from(value); },
+            "view.titlebar.color" => { self.config_file.values.titlebar_color = String::from(value); },
+            _ => {}
+        };
+
         self.save();
     }
 
