@@ -1,6 +1,8 @@
 
 import { EditorView, basicSetup } from "codemirror"
-import { Compartment, Text } from "@codemirror/state"
+import { keymap } from "@codemirror/view"
+import { insertTab } from "@codemirror/commands"
+import { Compartment } from "@codemirror/state"
 import { markdown } from "@codemirror/lang-markdown"
 import { marked } from "marked"
 
@@ -53,6 +55,11 @@ class Editor {
             extensions: [
                 basicSetup,
                 EditorView.lineWrapping,
+                keymap.of([{
+                    key: 'Tab',
+                    preventDefault: true,
+                    run: insertTab,
+                }]),
                 language.of(markdown())
             ],
             doc: "",
