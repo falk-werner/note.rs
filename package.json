@@ -18,7 +18,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.2.11"
+    "vite": "^5.2.12"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.2.5",
