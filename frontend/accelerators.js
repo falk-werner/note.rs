@@ -1,4 +1,5 @@
-import { appWindow } from '@tauri-apps/api/window'
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+const appWindow = getCurrentWebviewWindow()
 
 function init_accelerators(editor) {
     const body = document.querySelector("body");

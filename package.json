@@ -7,10 +7,12 @@
     "name": "Falk Werner",
     "url": "https://github.com/falk-werner)"
   },
-  "contributors": [{
-    "name": "fersaru",
-    "url": "https://github.com/fersaru"
-  }],
+  "contributors": [
+    {
+      "name": "fersaru",
+      "url": "https://github.com/fersaru"
+    }
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -22,7 +24,7 @@
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.3.0",
-    "@tauri-apps/api": "^1.6.0",
+    "@tauri-apps/api": "^2.0.1",
     "codemirror": "^6.0.1",
     "lineicons": "^1.0.3",
     "marked": "^14.1.2"
