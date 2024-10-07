@@ -10,7 +10,7 @@ use config::{Config, ConfigValue};
 use noteerror::{NoteResult};
 use localurl::{LocalUrl};
 use tauri::Manager;
-use tauri::http::ResponseBuilder;
+use tauri::http::Response;
 use std::sync::{Arc, Mutex};
 
 struct Context (Arc<Mutex<Config>>);
@@ -34,25 +34,25 @@ fn main() {
       read_all_settings,
       write_setting
       ])
-    .register_uri_scheme_protocol("local", move |app, request| {
-      let context = app.state::<Context>();
+    .register_uri_scheme_protocol("local", move |uri_scheme_context, request| {
+      let context = uri_scheme_context.app_handle().state::<Context>();
       let config = context.0.lock().unwrap();
 
-      let Ok(url) = LocalUrl::parse(request.uri()) else {
-        return Err("invalid url".into());
+      let uri = request.uri().to_string();
+      let Ok(url) = LocalUrl::parse(&uri) else {
+        return Response::builder().status(404).body("invalid url".as_bytes().to_vec()).unwrap();
       };
 
       let mut data: Vec<u8> = vec!();
       if let Err(_) = note::read_attachment(&config, &url.note, &url.filename, &mut data) {
-        return Err("Unknown attachment".into());
+        return Response::builder().status(404).body("Unknown attachment".as_bytes().to_vec()).unwrap();
       };
 
-      let response = ResponseBuilder::new()
-      .status(200)
-      .mimetype(&url.mime_type)
-      .body(data)
-      .unwrap();
-      Ok(response)
+      Response::builder()
+        .status(200)
+        .header("Content-Type", &url.mime_type)
+        .body(data)
+        .unwrap()
       })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

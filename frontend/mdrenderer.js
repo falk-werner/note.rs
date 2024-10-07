@@ -9,12 +9,12 @@ class MdRenderer extends marked.Renderer{
         this.#note = note
     }
 
-    image(href, title, text) {
-        if (!href.includes("://")) {
-            href = `local://notes/${this.#note.name}/${href}`;
+    image(context) {
+        if (!context.href.includes("://")) {
+            context.href = `local://notes/${this.#note.name}/${context.href}`;
         }
         
-        return super.image(href, title, text);
+        return super.image(context);
     }
 }
 
