@@ -1,5 +1,5 @@
 
-import "lineicons/web-font/lineicons.css"
+import "lineicons/assets/icon-fonts/lineicons.css"
 
 import { slider_attach } from "./slider.js"
 import { init_titlebar } from "./titlebar.js"
