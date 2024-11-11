@@ -19,12 +19,12 @@ const editor = new Editor();
 editor.mode_change_handler = () => {
   const icon = document.querySelector("#toggle-mode > i");
   if (editor.mode == "edit") {
-      icon.classList.add("lni-pencil");
+      icon.classList.add("lni-pencil-1");
       icon.classList.remove("lni-eye");
   }
   else {
       icon.classList.add("lni-eye");
-      icon.classList.remove("lni-pencil");
+      icon.classList.remove("lni-pencil-1");
   }
 };
 document.querySelector("#toggle-mode").addEventListener("click", () => {
