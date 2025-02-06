@@ -87,6 +87,7 @@ class Editor {
                 this.#view.classList.remove("hidden");
                 this.#content_element.classList.add("hidden");
 
+                this.save();
                 const renderer = new MdRenderer(this.#active_note);
                 const content = this.#editor.state.doc.toString();
                 const html = marked.parse(content, {
