@@ -1,0 +1,64 @@
+name: note-rs
+base: core22
+version: '0.1.0'
+license: 'MPL-2.0'
+summary: Yet another note taking tool.
+description: |
+  Yet another note taking tool.
+website: 'https://github.com/falk-werner/note.rs'
+issues: 'https://github.com/falk-werner/note.rs/issues'
+icon: src-tauri/icons/128x128@2x.png
+
+grade: stable
+confinement: strict
+
+layout:
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.1:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/webkit2gtk-4.1
+
+#slots:
+#  screenshot-service:
+#    bus: session
+#    interface: dbus
+#    name: org.gnome.Screenshot
+
+
+apps:
+  note-rs:
+    command: usr/bin/note-rs
+    desktop: usr/share/applications/note-rs.desktop
+    extensions: [gnome]
+    plugs:
+      - home
+#    slots:
+#      - screenshot-service
+
+parts:
+  build-app:
+    plugin: dump
+    build-snaps:
+      - node/20/stable
+      - rustup/latest/stable
+    build-packages:
+      - libwebkit2gtk-4.1-dev
+      - build-essential
+      - curl
+      - wget
+      - file
+      - libxdo-dev
+      - libssl-dev
+      - libayatana-appindicator3-dev
+      - librsvg2-dev
+      - dpkg
+    stage-packages:
+      - libwebkit2gtk-4.1-0
+      - libayatana-appindicator3-1
+      - gnome-screenshot
+    source: .
+    override-build: |
+      set -eu
+      npm run tauri build -- --bundles deb
+      npm install
+      rustup default stable
+      dpkg -x src-tauri/target/release/bundle/deb/*.deb $SNAPCRAFT_PART_INSTALL/
+      sed -i -e "s|Icon=note.rs|Icon=/usr/share/icons/hicolor/32x32/apps/note-rs.png|g" $SNAPCRAFT_PART_INSTALL/usr/share/applications/note-rs.desktop
