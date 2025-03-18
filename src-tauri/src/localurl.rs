@@ -36,11 +36,7 @@ impl LocalUrl {
         let filename = decode(&caps[2])?.to_string();
         let mime_type = get_mimetype(&filename);
 
-        Ok(LocalUrl {
-            note: note,
-            filename: filename,
-            mime_type: mime_type,
-        })
+        Ok(LocalUrl { note, filename, mime_type })
     } 
 }
 

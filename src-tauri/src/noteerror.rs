@@ -10,15 +10,17 @@ impl NoteError {
   pub fn new(message: &str) -> Self {
       NoteError { message: message.into() }
   }
+}
 
-  pub fn to_string(&self) -> String {
-    self.message.clone()
+impl From<NoteError> for String {
+  fn from(value: NoteError) -> Self {
+      value.message.clone()
   }
 }
 
 impl<E: Display> From<E> for NoteError {
   fn from(value: E) -> Self {
-      NoteError { message: value.to_string() }
+      NoteError { message: format!("{}", value) }
   }
 }
 
