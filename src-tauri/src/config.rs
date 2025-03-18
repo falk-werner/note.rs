@@ -104,7 +104,7 @@ impl Config {
         match Config::from_file(filename.as_path()) {
             Ok(config) => config,
             Err(error) => {
-                eprintln!("warning: failed to load config {:?}: {}", filename, error.to_string());
+                eprintln!("warning: failed to load config {:?}: {}", filename, <NoteError as Into<String>>::into(error));
                 let config = Config::new(filename.as_path());
                 config.save();
                 config
@@ -133,7 +133,7 @@ impl Config {
         let base_dir = &self.config_file.values.base_dir;
 
         let base_path = PathBuf::from(base_dir.replace("{home}", &home_dir.to_string_lossy()));
-        if let Err(err) = fs::create_dir_all(&base_path) {
+        if let Err(_err) = fs::create_dir_all(&base_path) {
             eprintln!("warn: failed to create base path at {:?}", base_path);
         }
 

@@ -44,7 +44,7 @@ fn main() {
       };
 
       let mut data: Vec<u8> = vec!();
-      if let Err(_) = note::read_attachment(&config, &url.note, &url.filename, &mut data) {
+      if note::read_attachment(&config, &url.note, &url.filename, &mut data).is_err() {
         return Response::builder().status(404).body("Unknown attachment".as_bytes().to_vec()).unwrap();
       };
 
@@ -130,5 +130,6 @@ async fn read_all_settings(context: tauri::State<'_, Context>) -> NoteResult<Vec
 #[tauri::command]
 async fn write_setting(context: tauri::State<'_, Context>, name: &str, value: &str) -> NoteResult<()> {
   let mut config = context.0.lock().unwrap();
-  Ok(config.write(name, value))
+  config.write(name, value);
+  Ok(())
 }
