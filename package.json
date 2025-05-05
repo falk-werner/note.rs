@@ -29,6 +29,6 @@
     "@tauri-apps/api": "^2.5.0",
     "codemirror": "^6.0.1",
     "lineicons": "^1.3.2",
-    "marked": "^15.0.7"
+    "marked": "^15.0.11"
   }
 }
