@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.6.2",
-    "vite": "^7.0.2"
+    "vite": "^7.0.4"
   },
   "dependencies": {
     "@codemirror/lang-markdown": "^6.3.3",
